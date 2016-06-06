@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Extract the names column
-cat $1 | cut -d, -f1 > names.txt
+cat $1.csv | cut -d, -f1 > names.txt
 
 # Replace spaces between first and last names by +, and remove quotes
 cat names.txt | sed -e 's/ /+/g' -e 's/$/   /g' -e 's/\"//g' > tmp.txt
@@ -12,22 +12,22 @@ rm tmp.txt
 
 # Fetch Google suggestions
 # (note that %20 is added to ensure that space after last word)
-rm googlesuggestions.txt
+rm $1_googlesuggestions.txt
 while read line; do
   curl -w "\n" -s "http://suggestqueries.google.com/complete/search?client=firefox&hl=en&q=${line}+%20" 
-done < nameswithplus.txt > googlesuggestions.txt
+done < nameswithplus.txt > $1_googlesuggestions.txt
 
 # Search for "wife" in suggestions
 # 0 = yes
-rm wife.txt
+rm $1_wife.txt
 while read line; do
   echo ${line} | grep -q wife ; echo $? 
-done < googlesuggestions.txt > wife.txt
+done < $1_googlesuggestions.txt > $1_wife.txt
 
 # Search for "husband"
 # 0 = yes
-rm husband.txt
+rm $1_husband.txt
 while read line; do
   echo ${line} | grep -q husband ; echo $? 
-done < googlesuggestions.txt > husband.txt
+done < $1_googlesuggestions.txt > $1_husband.txt
 
