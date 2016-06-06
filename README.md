@@ -6,6 +6,11 @@
 - need to add science data. NAS again? AAAS other categories?
 - stats!
  
+## Contents:
+- script.sh to fetch google suggestions
+type ./script.sh typedata.csv (replacing typedata by actors/ted/aaas/tennis)
+- analysis.R to run the analysis and plot the figures (work in progress).
+
 ## Sources:
 
 ### Tennis
