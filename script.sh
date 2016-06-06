@@ -1,14 +1,13 @@
 #!/bin/bash
 
 # Extract the names column
-cat $1.csv | cut -d, -f1 > names.txt
+cat $1.csv | cut -d, -f1 > $1_names.txt
 
 # Replace spaces between first and last names by +, and remove quotes
-cat names.txt | sed -e 's/ /+/g' -e 's/$/   /g' -e 's/\"//g' > tmp.txt
+cat $1_names.txt | sed -e 's/ /+/g' -e 's/$/   /g' -e 's/\"//g' > tmp.txt
 
 # Convert to lower case
 tr '[:upper:]' '[:lower:]' < tmp.txt > nameswithplus.txt
-rm tmp.txt
 
 # Fetch Google suggestions
 # (note that %20 is added to ensure that space after last word)
@@ -31,3 +30,6 @@ while read line; do
   echo ${line} | grep -q husband ; echo $? 
 done < $1_googlesuggestions.txt > $1_husband.txt
 
+# Clean
+rm nameswithplus.txt
+rm tmp.txt
