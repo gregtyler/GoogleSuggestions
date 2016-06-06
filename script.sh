@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Extract the names column
-cat people.csv | cut -d, -f1 > names.txt
+cat $1 | cut -d, -f1 > names.txt
 
-# Replace spaces between first and last names by +
-cat names.txt | sed -e 's/ /+/g' -e 's/$/   /g' > tmp.txt
+# Replace spaces between first and last names by +, and remove quotes
+cat names.txt | sed -e 's/ /+/g' -e 's/$/   /g' -e 's/\"//g' > tmp.txt
 
 # Convert to lower case
 tr '[:upper:]' '[:lower:]' < tmp.txt > nameswithplus.txt
