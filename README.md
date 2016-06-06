@@ -2,6 +2,10 @@
 
 (Notes: no need to download wget from http://rudix.org/packages/wget.html anymore)
 
+## TODO:
+- need to add science data. NAS again? AAAS other categories?
+- stats!
+ 
 ## Sources:
 
 ### Tennis
