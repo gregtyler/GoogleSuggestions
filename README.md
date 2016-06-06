@@ -28,8 +28,12 @@ https://www.ted.com/talks?sort=popular&topics[]=science&language=en
 ### NAS
 http://www.nasonline.org/member-directory/
 all in Primary: Evolutionary Biology
+REMOVED
 
 ### AAAS
 https://www.amacad.org/multimedia/pdfs/classlist.pdf
 all in II.4 Evolutionary and Population Biology and Ecology
+
+### HHMI
+https://www.hhmi.org/scientists/browse?kw=&sort_by=field_scientist_last_name&sort_order=ASC&items_per_page=100
 
