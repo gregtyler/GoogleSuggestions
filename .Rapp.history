@@ -1,793 +1,5 @@
-# Combine data for a given "category"#
-getdata <- function(catname){#
-	tmp <- read.csv(paste(catname, ".csv", sep=""), header=FALSE)#
-	# Find duplicates#
-	dupl <- duplicated(tmp$V1)#
-#
-	wife <- scan(paste(catname, "_wife.txt", sep=""))#
-	husband <- scan(paste(catname, "_husband.txt", sep=""))#
-	n <- length(wife) - sum(dupl)#
-	# Combine data, removing duplicates#
-	t2 <- cbind(tmp[!dupl,], wife=1-wife[!dupl], husband=1-husband[!dupl], cat=rep(catname, n))#
-	return(t2)#
-}#
-#
-t.aaas <- getdata("aaas")#
-t.ted <- getdata("ted")#
-t.tennis <- getdata("tennis")#
-t.actors <- getdata("actors")#
-t.hhmi <- getdata("hhmi")#
-#
-# Compute number of F, M, F husband, ...#
-countsuggestions <- function(cat){#
-	tab <- get(paste("t.", cat, sep=""))#
-	nF <- sum(tab$V2=="F")#
-	nM <- sum(tab$V2=="M")#
-	nFw <- sum(tab$V2=="F" & tab$wife==1)#
-	nMw <- sum(tab$V2=="M" & tab$wife==1)#
-	nFh <- sum(tab$V2=="F" & tab$husband==1)#
-	nMh <- sum(tab$V2=="M" & tab$husband==1)#
-	out <- c(nF=nF, nM=nM, nFw=nFw, nMw=nMw, nFh=nFh, nMh=nMh)#
-}#
-#
-cats <- list("actors", "tennis", "ted", "aaas", "hhmi")#
-cts <- t(sapply(cats, countsuggestions))#
-x <- data.frame(cts)#
-xx <- cbind(data.frame(cat=unlist(cats)), x)#
-names(xx) <- c("cat", dimnames(cts)[[2]])#
-xx#
-#
-colM <- rgb(0, 150, 150, maxColorValue = 255)#
-colF <- rgb(249, 113, 0, maxColorValue = 255)#
-plotfracs <- function(cat){#
-	lin <- xx[xx$cat==cat,]#
-	print(lin)#
-	dx <- 0.15#
-	xpos <- c(1-dx, 1+dx, 2-dx, 2+dx)#
-	ypos <- with(lin, c(nMh/nM, nMw/nM, nFh/nF, nFw/nF))#
-	plot(xpos, ypos, ylim=c(0,1), col=c(colM, colM, colF, colF), type="h", pch=15, lwd=5, axes = FALSE, ylab="Proportion", xlab="")#
-	lines(xpos, 0*xpos)#
-	axis(2, las=1)#
-	axis(1, at=xpos, labels=c("h", "w", "h", "w"), lwd=0, line=-1)#
-	axis(1, at=c(1, 2), labels=c("M", "F"), line=0.5, tick=FALSE)#
-	title(cat)#
-}#
-plotfracs("tennis")#
-plotfracs("aaas")#
-plotfracs("hhmi")#
-plotfracs("ted")#
-plotfracs("actors")
+setwd("Documents/Work/Sandbox/G")
 setwd("Documents/Work/Sandbox/GoogleSuggestions/")
-source("analysis.R")
-plotfracs("tennis")
-plotfracs("aaas")
-plotfracs("hhmi")
-plotfracs("ted")
-plotfracs("tennis")
-plotfracs("actors")
-plotfracs("aaas")
-plotfracs("hhmi")
-t.hhmi
-xx
-plotfracs("ted")
-plotfracs("ted")
-duTA <- duplicated(c(t.ted$V1, t.aaas))
-duTA
-sum(duTA)
-duTA <- duplicated(c(t.ted$V1, t.aaas$V1))#
-sum(duTA)
-c(t.ted$V1, t.aaas$V1)[sum(duTA)]
-c(t.ted$V1, t.aaas$V1)[duTA]
-t.ted$V1
-c(t.ted$V1, t.aaas$V1)[duTA]
-c(t.ted$V1, t.aaas$V1)
-is.factor
-is.factor(t.ted$V1[1])
-?read.csv
-# Combine data for a given "category"#
-getdata <- function(catname){#
-	tmp <- read.csv(paste(catname, ".csv", sep=""), header=FALSE, stringAsFactors=FALSE)#
-	# Find duplicates#
-	dupl <- duplicated(tmp$V1)#
-#
-	wife <- scan(paste(catname, "_wife.txt", sep=""))#
-	husband <- scan(paste(catname, "_husband.txt", sep=""))#
-	n <- length(wife) - sum(dupl)#
-	# Combine data, removing duplicates#
-	t2 <- cbind(tmp[!dupl,], wife=1-wife[!dupl], husband=1-husband[!dupl], cat=rep(catname, n))#
-	return(t2)#
-}#
-#
-t.aaas <- getdata("aaas")#
-t.ted <- getdata("ted")#
-t.tennis <- getdata("tennis")#
-t.actors <- getdata("actors")#
-t.hhmi <- getdata("hhmi")#
-#
-# Now we want to combine the Science data#
-duTA <- duplicated(c(t.ted$V1, t.aaas$V1))#
-sum(duTA)
-# Combine data for a given "category"#
-getdata <- function(catname){#
-	tmp <- read.table(paste(catname, ".csv", sep=""), header=FALSE, stringAsFactors=FALSE, sep=",")#
-	# Find duplicates#
-	dupl <- duplicated(tmp$V1)#
-#
-	wife <- scan(paste(catname, "_wife.txt", sep=""))#
-	husband <- scan(paste(catname, "_husband.txt", sep=""))#
-	n <- length(wife) - sum(dupl)#
-	# Combine data, removing duplicates#
-	t2 <- cbind(tmp[!dupl,], wife=1-wife[!dupl], husband=1-husband[!dupl], cat=rep(catname, n))#
-	return(t2)#
-}#
-#
-t.aaas <- getdata("aaas")#
-t.ted <- getdata("ted")#
-t.tennis <- getdata("tennis")#
-t.actors <- getdata("actors")#
-t.hhmi <- getdata("hhmi")#
-#
-# Now we want to combine the Science data#
-duTA <- duplicated(c(t.ted$V1, t.aaas$V1))#
-sum(duTA)
-# Combine data for a given "category"#
-getdata <- function(catname){#
-	tmp <- read.csv(paste(catname, ".csv", sep=""), header=FALSE, stringsAsFactors=FALSE)#
-	# Find duplicates#
-	dupl <- duplicated(tmp$V1)#
-#
-	wife <- scan(paste(catname, "_wife.txt", sep=""))#
-	husband <- scan(paste(catname, "_husband.txt", sep=""))#
-	n <- length(wife) - sum(dupl)#
-	# Combine data, removing duplicates#
-	t2 <- cbind(tmp[!dupl,], wife=1-wife[!dupl], husband=1-husband[!dupl], cat=rep(catname, n))#
-	return(t2)#
-}#
-#
-t.aaas <- getdata("aaas")#
-t.ted <- getdata("ted")#
-t.tennis <- getdata("tennis")#
-t.actors <- getdata("actors")#
-t.hhmi <- getdata("hhmi")#
-#
-# Now we want to combine the Science data#
-duTA <- duplicated(c(t.ted$V1, t.aaas$V1))#
-sum(duTA)
-c(t.ted$V1, t.aaas$V1)[duTA]
-t.ted$V1
-t.aaas
-duTH <- duplicated(c(t.ted$V1, t.hhmi$V1))#
-sum(duTH)
-duTH
-c(t.ted$V1, t.hhmi$V1)[duTH]
-t.hhmi[t.hhmi$husband==1,]
-# Now we want to combine the Science data#
-duTA <- duplicated(c(t.ted$V1, t.aaas$V1))#
-sum(duTA)#
-tmp <- rbind(t.ted, t.aaas[!duTA,])#
-#
-duTH <- duplicated(c(tmp$V1, t.hhmi$V1))#
-sum(duTH)
-# Combine data for a given "category"#
-getdata <- function(catname){#
-	tmp <- read.csv(paste(catname, ".csv", sep=""), header=FALSE, stringsAsFactors=FALSE)#
-	# Find duplicates#
-	dupl <- duplicated(tmp$V1)#
-#
-	wife <- scan(paste(catname, "_wife.txt", sep=""))#
-	husband <- scan(paste(catname, "_husband.txt", sep=""))#
-	n <- length(wife) - sum(dupl)#
-	# Combine data, removing duplicates#
-	t2 <- cbind(tmp[!dupl,], wife=1-wife[!dupl], husband=1-husband[!dupl], cat=rep(catname, n))#
-	return(t2)#
-}#
-#
-t.aaas <- getdata("aaas")#
-t.ted <- getdata("ted")#
-t.tennis <- getdata("tennis")#
-t.actors <- getdata("actors")#
-t.hhmi <- getdata("hhmi")
-# Now we want to combine the Science data#
-duTA <- duplicated(c(t.ted$V1, t.aaas$V1))#
-sum(duTA)#
-tmp <- rbind(t.ted, t.aaas[!duTA,])#
-#
-duTH <- duplicated(c(tmp$V1, t.hhmi$V1))#
-sum(duTH)
-t.aaas$V1[duTA]
-t.aaas$V1
-t.aaas$V1[duTA]
-duTA
-t.aaas[duTA,]
-cat("There was ", sum(duTA), "replicate(s)," ttmp[duTA,])
-ttmp <- rbind(t.ted, t.aaas) # Combine TED and AAAS datasets#
-duTA <- duplicated(ttmp[1,]) # Find replicated names#
-cat("There was ", sum(duTA), "replicate(s)," ttmp[duTA,])
-cat("There was " sum(duTA) "replicate(s)," ttmp[duTA,])
-cat("There was ", sum(duTA),"replicate(s),", ttmp[duTA,])
-ttmp <- rbind(t.ted, t.aaas) # Combine TED and AAAS datasets#
-duTA <- duplicated(ttmp[1,]) # Find replicated names
-duTA
-duTA <- duplicated(ttmp[,1]) # Find replicated names#
-cat("There was ", sum(duTA),"replicate(s),", ttmp[duTA,])
-print(ttmp[duTA,1]) # Print replicates
-ttmp <- rbind(tmp, t.hhmi) # Add HHMI data
-duTH <- duplicated(ttmp$V1)
-duTH
-ttmp
-# Now we want to combine the Science data#
-ttmp <- rbind(t.ted, t.aaas) # Combine TED and AAAS datasets#
-duTA <- duplicated(ttmp[,1]) # Find replicated names#
-print(ttmp[duTA,1]) # Print replicates
-tmp <- ttmp[!duTA,]
-tmp
-ttmp <- rbind(tmp, t.hhmi) # Add HHMI data
-ttmp
-duTH <- duplicated(ttmp$V1)#
-sum(duTH)
-duTH
-??data.frame
-names(tmp)
-tmp[1,]
-unique(tmp$cat)
-# Now we want to combine the Science data#
-ttmp <- rbind(t.ted, t.aaas) # Combine TED and AAAS datasets#
-duTA <- duplicated(ttmp[,1]) # Find replicated names#
-print(ttmp[duTA,1]) # Print replicates#
-tmp <- ttmp[!duTA,]#
-#
-ttmp <- rbind(tmp, t.hhmi) # Add HHMI data#
-duTH <- duplicated(ttmp$V1) # Find replicated names#
-print(duTH) # Print replicates#
-tmp <- ttmp[!duTH,] # Remove replicates
-tmp
-t.science <- data.frame(cbind(tmp[1, 2, 4, 5], aaas=1*tmp[6]=="aaas", hhmi=1*tmp[6]=="hhmi", ted=1*tmp[6]=="ted"))
-t.science <- data.frame(cbind(tmp[, c(1, 2, 4, 5)], aaas=1*tmp[6]=="aaas", hhmi=1*tmp[6]=="hhmi", ted=1*tmp[6]=="ted"))
-# Combine data for a given "category"#
-getdata <- function(catname){#
-	tmp <- read.csv(paste(catname, ".csv", sep=""), header=FALSE, stringsAsFactors=FALSE)#
-	# Find duplicates#
-	dupl <- duplicated(tmp$V1)#
-#
-	wife <- scan(paste(catname, "_wife.txt", sep=""))#
-	husband <- scan(paste(catname, "_husband.txt", sep=""))#
-	n <- length(wife) - sum(dupl)#
-	# Combine data, removing duplicates#
-	t2 <- cbind(tmp[!dupl,], wife=1-wife[!dupl], husband=1-husband[!dupl])#
-	return(t2)#
-}#
-#
-t.aaas <- getdata("aaas")#
-t.ted <- getdata("ted")#
-t.tennis <- getdata("tennis")#
-t.actors <- getdata("actors")#
-t.hhmi <- getdata("hhmi")#
-#
-# Now we want to combine the Science data#
-ttmp <- rbind(t.ted, t.aaas) # Combine TED and AAAS datasets#
-duTA <- duplicated(ttmp[,1]) # Find replicated names#
-print(ttmp[duTA,1]) # Print replicates#
-tmp <- ttmp[!duTA,]#
-#
-ttmp <- rbind(tmp, t.hhmi) # Add HHMI data#
-duTH <- duplicated(ttmp$V1) # Find replicated names#
-print(duTH) # Print replicates#
-tmp <- ttmp[!duTH,] # Remove replicates#
-#
-# But we need to add the removed info again!#
-t.science <- data.frame(cbind(tmp[, c(1, 2, 4, 5)], aaas=1*tmp[3]=="AAAS", hhmi=1*tmp[3]=="HHMI", ted=1*tmp[3]=="TED"))
-tmp[, c(1, 2, 4, 5)]
-t.science <- data.frame(cbind(tmp[, c(1, 2, 4, 5)], aaas=1*(tmp[3]=="AAAS"), hhmi=1*(tmp[3]=="HHMI"), ted=1*(tmp[3]=="TED")))
-t.science
-t.science <- data.frame(cbind(tmp[, c(1, 2, 4, 5)], 1*(tmp[3]=="AAAS"), 1*(tmp[3]=="HHMI"), 1*(tmp[3]=="TED")))#
-names(t.science) <- c("name", "sex", "wife", "husband", "AAAS", "HHMI", "TED")
-t.science[1,]
-t.science[t.science$name==dTA, "AAAS"] <- 1
-for (dTA in duTA){#
-	t.science[t.science$name==dTA, "AAAS"] <- 1#
-}
-t.science[t.science$name==dTA,]
-dTA
-t.science[t.science$name=="Edward O. Wilson",]
-# So first, find them#
-tmpTA <- rbind(t.ted, t.aaas) # Combine TED and AAAS datasets#
-duTA <- duplicated(ttmp[, 1]) # Find replicated names#
-namesTA <- tmpTA[duTA, 1] # Get the corresponding names#
-print(namesTA) # Print replicates#
-tmp <- tmpTA[!duTA,]#
-#
-tmpTH <- rbind(tmp, t.hhmi) # Add HHMI data#
-duTH <- duplicated(tmpTH$V1) # Find replicated names#
-namesTH <- tmpTH[duTH, 1] # Get the corresponding names #
-print(namesTH) # Print replicates#
-tmp <- tmpTH[!duTH,] # Remove replicates#
-#
- # Now we need to add the removed info again!#
-t.science <- data.frame(cbind(tmp[, c(1, 2, 4, 5)], 1*(tmp[3]=="AAAS"), 1*(tmp[3]=="HHMI"), 1*(tmp[3]=="TED")))#
-names(t.science) <- c("name", "sex", "wife", "husband", "AAAS", "HHMI", "TED")
-for (dTA in namesTA){#
-	t.science[t.science$name==dTA, "AAAS"] <- 1#
-}
-namesTA
-rm(list=ls())
-# Combine data for a given "category"#
-getdata <- function(catname){#
-	tmp <- read.csv(paste(catname, ".csv", sep=""), header=FALSE, stringsAsFactors=FALSE)#
-	# Find duplicates#
-	dupl <- duplicated(tmp$V1)#
-#
-	wife <- scan(paste(catname, "_wife.txt", sep=""))#
-	husband <- scan(paste(catname, "_husband.txt", sep=""))#
-	n <- length(wife) - sum(dupl)#
-	# Combine data, removing duplicates#
-	t2 <- cbind(tmp[!dupl,], wife=1-wife[!dupl], husband=1-husband[!dupl])#
-	return(t2)#
-}#
-#
-t.aaas <- getdata("aaas")#
-t.ted <- getdata("ted")#
-t.tennis <- getdata("tennis")#
-t.actors <- getdata("actors")#
-t.hhmi <- getdata("hhmi")#
-#
-# Now we want to combine the Science data#
- # There are people who belong to different categories: we need to merge them#
- # So first, find them#
-tmpTA <- rbind(t.ted, t.aaas) # Combine TED and AAAS datasets#
-duTA <- duplicated(tmpTA[, 1]) # Find replicated names#
-namesTA <- tmpTA[duTA, 1] # Get the corresponding names#
-print(namesTA) # Print replicates#
-tmp <- tmpTA[!duTA,]#
-#
-tmpTH <- rbind(tmp, t.hhmi) # Add HHMI data#
-duTH <- duplicated(tmpTH$V1) # Find replicated names#
-namesTH <- tmpTH[duTH, 1] # Get the corresponding names #
-print(namesTH) # Print replicates#
-tmp <- tmpTH[!duTH,] # Remove replicates#
-#
- # Now we need to add the removed info again!#
-t.science <- data.frame(cbind(tmp[, c(1, 2, 4, 5)], 1*(tmp[3]=="AAAS"), 1*(tmp[3]=="HHMI"), 1*(tmp[3]=="TED")))#
-names(t.science) <- c("name", "sex", "wife", "husband", "AAAS", "HHMI", "TED")#
-for (dTA in namesTA){#
-	t.science[t.science$name==dTA, "AAAS"] <- 1#
-}
-t.science[t.science$name=="Edward O. Wilson", ]
-# Add removed HHMI data#
-for (dTH in namesTH){#
-	t.science[t.science$name==dTH, "HHMI"] <- 1#
-}
-t.science
-t.science[t.science$name=="Pardis Sabeti", ]
-print(t.tennis[1:50, "wife"])
-plot(t.tennis[1:50, "wife"])
-plot(t.tennis[51:100, "husband"])
-library(stringr)
-?vapply
-vapply(t.science$name, function(l) word(l, -1))
-vapply(t.science$name, function(l) word(l, -1), FUN.VALUE=c(1))
-vapply(t.science$name, function(l) word(l, -1), FUN.VALUE="c(1)")
-nm <- vapply(t.science$name, function(l) word(l, -1), FUN.VALUE="c(1)")
-nm
-unlist(nm)
-sort(nm)
-c(nm)
-nm <- unname(vapply(t.science$name, function(l) word(l, -1), FUN.VALUE="c(1)"))
-nm
-sort(nm)
-order(nm)
-is.factor(nm)
-is.factor(nm[1])
-nm[order(nm)]
-duplicated(onm)
-onm <- nm[order(nm)]
-duplicated(onm)
-onm[duplicated(onm)]
-?duplicated
-nm <- unname(vapply(t.science$name, function(l) word(l, -1), FUN.VALUE="c(1)"))#
-onm <- nm[order(nm)]#
-t.science$name[duplicated(nm)]
-onm <- nm[order(nm)]#
-temp <- t.science[order(nm)]#
-temp[duplicated(onm),]
-temp <- t.science[order(nm),]#
-temp[duplicated(onm),]
-?duplicated
-temp[duplicated(onm) | duplicated(onm, fromLast=TRUE),]
-names(t.actors)
-# Clean the memory#
-rm(list=ls())#
-#
-# OBTAIN AND COMBINE DATA#
-#
-# Combine data for a given "category"#
-getdata <- function(catname){#
-	tmp <- read.csv(paste(catname, ".csv", sep=""), header=FALSE, stringsAsFactors=FALSE)#
-	# Find duplicates#
-	dupl <- duplicated(tmp$V1)#
-#
-	wife <- scan(paste(catname, "_wife.txt", sep=""))#
-	husband <- scan(paste(catname, "_husband.txt", sep=""))#
-	n <- length(wife) - sum(dupl)#
-	# Combine data, removing duplicates#
-	t2 <- cbind(tmp[!dupl,], wife=1-wife[!dupl], husband=1-husband[!dupl])#
-	names(t2)[1:3] <- c("name", "sex", "cat")#
-	return(t2)#
-}#
-#
-t.aaas <- getdata("aaas")#
-t.ted <- getdata("ted")#
-t.tennis <- getdata("tennis")#
-t.actors <- getdata("actors")#
-t.hhmi <- getdata("hhmi")
-t.aaas
-# Now we want to combine the Science data#
- # There are people who belong to different categories: we need to merge them#
- # So first, find them#
-tmpTA <- rbind(t.ted, t.aaas) # Combine TED and AAAS datasets#
-duTA <- duplicated(tmpTA[, 1]) # Find replicated names#
-namesTA <- tmpTA[duTA, 1] # Get the corresponding names#
-print(namesTA) # Print replicates#
-tmp <- tmpTA[!duTA,] # Remove replicates#
-#
-tmpTH <- rbind(tmp, t.hhmi) # Add HHMI data#
-duTH <- duplicated(tmpTH$V1) # Find replicated names#
-namesTH <- tmpTH[duTH, 1] # Get the corresponding names #
-print(namesTH) # Print replicates#
-tmp <- tmpTH[!duTH,] # Remove replicates#
-#
- # Now we need to add the removed info again!#
-t.science <- data.frame(cbind(tmp[, c(1, 2, 4, 5)], "science", 1*(tmp[3]=="AAAS"), 1*(tmp[3]=="HHMI"), 1*(tmp[3]=="TED")))#
-names(t.science) <- c("name", "sex", "wife", "husband", "cat", "AAAS", "HHMI", "TED")#
-#
-# Add removed AAAS data#
-for (dTA in namesTA){#
-	t.science[t.science$name==dTA, "AAAS"] <- 1#
-}#
-# Add removed HHMI data#
-for (dTH in namesTH){#
-	t.science[t.science$name==dTH, "HHMI"] <- 1#
-}
-# Clean the memory#
-rm(list=ls())#
-#
-# OBTAIN AND COMBINE DATA#
-#
-# Combine data for a given "category"#
-getdata <- function(catname){#
-	tmp <- read.csv(paste(catname, ".csv", sep=""), header=FALSE, stringsAsFactors=FALSE)#
-	# Find duplicates#
-	dupl <- duplicated(tmp$V1)#
-#
-	wife <- scan(paste(catname, "_wife.txt", sep=""))#
-	husband <- scan(paste(catname, "_husband.txt", sep=""))#
-	n <- length(wife) - sum(dupl)#
-	# Combine data, removing duplicates#
-	t2 <- cbind(tmp[!dupl,], wife=1-wife[!dupl], husband=1-husband[!dupl])#
-	names(t2)[1:3] <- c("name", "sex", "cat")#
-	return(t2)#
-}#
-#
-t.aaas <- getdata("aaas")#
-t.ted <- getdata("ted")#
-t.tennis <- getdata("tennis")#
-t.actors <- getdata("actors")#
-t.hhmi <- getdata("hhmi")#
-#
-# Now we want to combine the Science data#
- # There are people who belong to different categories: we need to merge them#
- # So first, find them#
-tmpTA <- rbind(t.ted, t.aaas) # Combine TED and AAAS datasets#
-duTA <- duplicated(tmpTA[, 1]) # Find replicated names#
-namesTA <- tmpTA[duTA, 1] # Get the corresponding names#
-print(namesTA) # Print replicates#
-tmp <- tmpTA[!duTA,] # Remove replicates
-tmpTH <- rbind(tmp, t.hhmi) # Add HHMI data#
-duTH <- duplicated(tmpTH$name) # Find replicated names#
-namesTH <- tmpTH[duTH, 1] # Get the corresponding names #
-print(namesTH) # Print replicates#
-tmp <- tmpTH[!duTH,] # Remove replicates
-# Now we need to add the removed info again!#
-t.science <- data.frame(cbind(tmp[, c(1, 2, 4, 5)], "science", 1*(tmp[3]=="AAAS"), 1*(tmp[3]=="HHMI"), 1*(tmp[3]=="TED")))#
-names(t.science) <- c("name", "sex", "wife", "husband", "cat", "AAAS", "HHMI", "TED")
-# Add removed AAAS data#
-for (dTA in namesTA){#
-	t.science[t.science$name==dTA, "AAAS"] <- 1#
-}#
-# Add removed HHMI data#
-for (dTH in namesTH){#
-	t.science[t.science$name==dTH, "HHMI"] <- 1#
-}
-manualcontrol <- TRUE
-if(manualcontrol){#
-	# Manual control of remaining potential duplicates#
-	library(stringr)#
-	# Extract last word in name (mostly last name)#
-	nm <- unname(vapply(t.science$name, function(l) word(l, -1), FUN.VALUE="c(1)"))#
-	# Sort by alphabetical order#
-	onm <- nm[order(nm)]#
-	# Sort the entire table by alphabetical order#
-	temp <- t.science[order(nm),]#
-	# Find duplicates in last names (all values, hence the | and fromLast) and print them#
-	temp[duplicated(onm) | duplicated(onm, fromLast=TRUE),]#
-	# Then inspect the table and potentially correct the files if typoes#
-	# But this is not necessary anymore since it's already been done.
-}
-# Compute number of F, M, F husband, ...#
-countsuggestions <- function(cat){#
-	tab <- get(paste("t.", cat, sep=""))#
-	nF <- sum(tab$V2=="F")#
-	nM <- sum(tab$V2=="M")#
-	nFw <- sum(tab$V2=="F" & tab$wife==1)#
-	nMw <- sum(tab$V2=="M" & tab$wife==1)#
-	nFh <- sum(tab$V2=="F" & tab$husband==1)#
-	nMh <- sum(tab$V2=="M" & tab$husband==1)#
-	out <- c(nF=nF, nM=nM, nFw=nFw, nMw=nMw, nFh=nFh, nMh=nMh)#
-}
-# Clean the memory#
-rm(list=ls())#
-#
-# OBTAIN AND COMBINE DATA#
-#
-# Combine data for a given "category"#
-getdata <- function(catname){#
-	tmp <- read.csv(paste(catname, ".csv", sep=""), header=FALSE, stringsAsFactors=FALSE)#
-	# Find duplicates#
-	dupl <- duplicated(tmp$V1)#
-#
-	wife <- scan(paste(catname, "_wife.txt", sep=""))#
-	husband <- scan(paste(catname, "_husband.txt", sep=""))#
-	n <- length(wife) - sum(dupl)#
-	# Combine data, removing duplicates#
-	t1 <- cbind(tmp[!dupl,], wife=1-wife[!dupl], husband=1-husband[!dupl])#
-	t2 <- cbind(t1, wh=((t1$wife==1)|(t1$husband==1)))#
-	names(t2)[1:3] <- c("name", "sex", "cat")#
-	return(t2)#
-}#
-#
-t.aaas <- getdata("aaas")#
-t.ted <- getdata("ted")#
-t.tennis <- getdata("tennis")#
-t.actors <- getdata("actors")#
-t.hhmi <- getdata("hhmi")#
-#
-# Now we want to combine the Science data#
- # There are people who belong to different categories: we need to merge them#
- # So first, find them#
-tmpTA <- rbind(t.ted, t.aaas) # Combine TED and AAAS datasets#
-duTA <- duplicated(tmpTA[, 1]) # Find replicated names#
-namesTA <- tmpTA[duTA, 1] # Get the corresponding names#
-print(namesTA) # Print replicates#
-tmp <- tmpTA[!duTA,] # Remove replicates#
-#
-tmpTH <- rbind(tmp, t.hhmi) # Add HHMI data#
-duTH <- duplicated(tmpTH$name) # Find replicated names#
-namesTH <- tmpTH[duTH, 1] # Get the corresponding names #
-print(namesTH) # Print replicates#
-tmp <- tmpTH[!duTH,] # Remove replicates#
-#
- # Now we need to add the removed info again!#
-t.science <- data.frame(cbind(tmp[, c(1, 2, 4, 5)], "science", 1*(tmp[3]=="AAAS"), 1*(tmp[3]=="HHMI"), 1*(tmp[3]=="TED")))#
-names(t.science) <- c("name", "sex", "wife", "husband", "cat", "AAAS", "HHMI", "TED")#
-# Add removed AAAS data#
-for (dTA in namesTA){#
-	t.science[t.science$name==dTA, "AAAS"] <- 1#
-}#
-# Add removed HHMI data#
-for (dTH in namesTH){#
-	t.science[t.science$name==dTH, "HHMI"] <- 1#
-}#
-#
-manualcontrol <- FALSE#
-if(manualcontrol){#
-	# Manual control of remaining potential duplicates#
-	library(stringr)#
-	# Extract last word in name (mostly last name)#
-	nm <- unname(vapply(t.science$name, function(l) word(l, -1), FUN.VALUE="c(1)"))#
-	# Sort by alphabetical order#
-	onm <- nm[order(nm)]#
-	# Sort the entire table by alphabetical order#
-	temp <- t.science[order(nm),]#
-	# Find duplicates in last names (all values, hence the | and fromLast) and print them#
-	temp[duplicated(onm) | duplicated(onm, fromLast=TRUE),]#
-	# Then inspect the table and potentially correct the files if typoes#
-	# But this is not necessary anymore since it's already been done.#
-}
-??aggregate
-aggregate(t.tennis, by=t.tennis$sex)
-aggregate(t.tennis, by=t.tennis$sex, FUN=sum)
-aggregate(t.tennis, by=as.list(t.tennis$sex), FUN=sum)
-t.tennis$sex
-length(t.tennis)
-t.tennis
-# Compute number of F, M, F husband, ...#
-countsuggestions <- function(cat){#
-	tab <- get(paste("t.", cat, sep=""))#
-	nF <- sum(tab$sex=="F")#
-	nM <- sum(tab$sex=="M")#
-	nFwh <- sum(tab$sex=="F" & tab$wh==1)#
-	nMwh <- sum(tab$sex=="M" & tab$wh==1)#
-	out <- c(nF=nF, nM=nM, nFwh=nFwh, nMwh=nMwh)#
-}#
-cats <- list("actors", "tennis", "science")#
-cts <- t(sapply(cats, countsuggestions))#
-x <- data.frame(cts)#
-xx <- cbind(data.frame(cat=unlist(cats)), x)#
-names(xx) <- c("cat", dimnames(cts)[[2]])#
-xx
-t.science
-t.aaas[1,]
-# Clean the memory#
-rm(list=ls())#
-#
-# OBTAIN AND COMBINE DATA#
-#
-# Combine data for a given "category"#
-getdata <- function(catname){#
-	tmp <- read.csv(paste(catname, ".csv", sep=""), header=FALSE, stringsAsFactors=FALSE)#
-	# Find duplicates#
-	dupl <- duplicated(tmp$V1)#
-#
-	wife <- scan(paste(catname, "_wife.txt", sep=""))#
-	husband <- scan(paste(catname, "_husband.txt", sep=""))#
-	n <- length(wife) - sum(dupl)#
-	# Combine data, removing duplicates#
-	t1 <- cbind(tmp[!dupl,], wife=1-wife[!dupl], husband=1-husband[!dupl])#
-	t2 <- cbind(t1, wh=((t1$wife==1)|(t1$husband==1)))#
-	names(t2)[1:3] <- c("name", "sex", "cat")#
-	return(t2)#
-}#
-#
-t.aaas <- getdata("aaas")#
-t.ted <- getdata("ted")#
-t.tennis <- getdata("tennis")#
-t.actors <- getdata("actors")#
-t.hhmi <- getdata("hhmi")#
-#
-# Now we want to combine the Science data#
- # There are people who belong to different categories: we need to merge them#
- # So first, find them#
-tmpTA <- rbind(t.ted, t.aaas) # Combine TED and AAAS datasets#
-duTA <- duplicated(tmpTA[, 1]) # Find replicated names#
-namesTA <- tmpTA[duTA, 1] # Get the corresponding names#
-print(namesTA) # Print replicates#
-tmp <- tmpTA[!duTA,] # Remove replicates#
-#
-tmpTH <- rbind(tmp, t.hhmi) # Add HHMI data#
-duTH <- duplicated(tmpTH$name) # Find replicated names#
-namesTH <- tmpTH[duTH, 1] # Get the corresponding names #
-print(namesTH) # Print replicates#
-tmp <- tmpTH[!duTH,] # Remove replicates#
-#
- # Now we need to add the removed info again!#
-t.science <- data.frame(cbind(tmp[, c("name", "sex")], "science", tmp[, c("wife", "husband", "wh")], 1*(tmp[3]=="AAAS"), 1*(tmp[3]=="HHMI"), 1*(tmp[3]=="TED")))#
-names(t.science) <- c("name", "sex", "cat", "wife", "husband", "wh", "AAAS", "HHMI", "TED")#
-# Add removed AAAS data#
-for (dTA in namesTA){#
-	t.science[t.science$name==dTA, "AAAS"] <- 1#
-}#
-# Add removed HHMI data#
-for (dTH in namesTH){#
-	t.science[t.science$name==dTH, "HHMI"] <- 1#
-}#
-#
-manualcontrol <- FALSE#
-if(manualcontrol){#
-	# Manual control of remaining potential duplicates#
-	library(stringr)#
-	# Extract last word in name (mostly last name)#
-	nm <- unname(vapply(t.science$name, function(l) word(l, -1), FUN.VALUE="c(1)"))#
-	# Sort by alphabetical order#
-	onm <- nm[order(nm)]#
-	# Sort the entire table by alphabetical order#
-	temp <- t.science[order(nm),]#
-	# Find duplicates in last names (all values, hence the | and fromLast) and print them#
-	temp[duplicated(onm) | duplicated(onm, fromLast=TRUE),]#
-	# Then inspect the table and potentially correct the files if typoes#
-	# But this is not necessary anymore since it's already been done.#
-}#
-#
-# Compute number of F, M, F husband, ...#
-countsuggestions <- function(cat){#
-	tab <- get(paste("t.", cat, sep=""))#
-	nF <- sum(tab$sex=="F")#
-	nM <- sum(tab$sex=="M")#
-	nFwh <- sum(tab$sex=="F" & tab$wh==1)#
-	nMwh <- sum(tab$sex=="M" & tab$wh==1)#
-	out <- c(nF=nF, nM=nM, nFwh=nFwh, nMwh=nMwh)#
-}#
-cats <- list("actors", "tennis", "science")#
-cts <- t(sapply(cats, countsuggestions))#
-x <- data.frame(cts)#
-xx <- cbind(data.frame(cat=unlist(cats)), x)#
-names(xx) <- c("cat", dimnames(cts)[[2]])#
-xx
-t.science[t.science$wh==1,]
-glm(wh ~ AAAS + HHMI + TED + sex, data=t.science, family=binomial)
-# Clean the memory#
-rm(list=ls())#
-#
-# OBTAIN AND COMBINE DATA#
-#
-# Combine data for a given "category"#
-getdata <- function(catname){#
-	tmp <- read.csv(paste(catname, ".csv", sep=""), header=FALSE, stringsAsFactors=FALSE)#
-	# Find duplicates#
-	dupl <- duplicated(tmp$V1)#
-#
-	wife <- scan(paste(catname, "_wife.txt", sep=""))#
-	husband <- scan(paste(catname, "_husband.txt", sep=""))#
-	n <- length(wife) - sum(dupl)#
-	# Combine data, removing duplicates#
-	t1 <- cbind(tmp[!dupl,], wife=1-wife[!dupl], husband=1-husband[!dupl])#
-	t2 <- cbind(t1, wh=((t1$wife==1)|(t1$husband==1)), sex=(t1$sex==1)) # F=1, M=0#
-	names(t2)[1:3] <- c("name", "MF", "cat")#
-	return(t2)#
-}#
-#
-t.aaas <- getdata("aaas")#
-t.ted <- getdata("ted")#
-t.tennis <- getdata("tennis")#
-t.actors <- getdata("actors")#
-t.hhmi <- getdata("hhmi")#
-#
-# Now we want to combine the Science data#
- # There are people who belong to different categories: we need to merge them#
- # So first, find them#
-tmpTA <- rbind(t.ted, t.aaas) # Combine TED and AAAS datasets#
-duTA <- duplicated(tmpTA[, 1]) # Find replicated names#
-namesTA <- tmpTA[duTA, 1] # Get the corresponding names#
-print(namesTA) # Print replicates#
-tmp <- tmpTA[!duTA,] # Remove replicates#
-#
-tmpTH <- rbind(tmp, t.hhmi) # Add HHMI data#
-duTH <- duplicated(tmpTH$name) # Find replicated names#
-namesTH <- tmpTH[duTH, 1] # Get the corresponding names #
-print(namesTH) # Print replicates#
-tmp <- tmpTH[!duTH,] # Remove replicates#
-#
- # Now we need to add the removed info again!#
-t.science <- data.frame(cbind(tmp[, c("name", "sex")], "science", tmp[, c("wife", "husband", "wh")], 1*(tmp[3]=="AAAS"), 1*(tmp[3]=="HHMI"), 1*(tmp[3]=="TED")))#
-names(t.science) <- c("name", "sex", "cat", "wife", "husband", "wh", "AAAS", "HHMI", "TED")#
-# Add removed AAAS data#
-for (dTA in namesTA){#
-	t.science[t.science$name==dTA, "AAAS"] <- 1#
-}#
-# Add removed HHMI data#
-for (dTH in namesTH){#
-	t.science[t.science$name==dTH, "HHMI"] <- 1#
-}#
-#
-manualcontrol <- FALSE#
-if(manualcontrol){#
-	# Manual control of remaining potential duplicates#
-	library(stringr)#
-	# Extract last word in name (mostly last name)#
-	nm <- unname(vapply(t.science$name, function(l) word(l, -1), FUN.VALUE="c(1)"))#
-	# Sort by alphabetical order#
-	onm <- nm[order(nm)]#
-	# Sort the entire table by alphabetical order#
-	temp <- t.science[order(nm),]#
-	# Find duplicates in last names (all values, hence the | and fromLast) and print them#
-	temp[duplicated(onm) | duplicated(onm, fromLast=TRUE),]#
-	# Then inspect the table and potentially correct the files if typoes#
-	# But this is not necessary anymore since it's already been done.#
-}#
-#
-# Compute number of F, M, F husband, ...#
-countsuggestions <- function(cat){#
-	tab <- get(paste("t.", cat, sep=""))#
-	nF <- sum(tab$sex==1)#
-	nM <- sum(tab$sex==0)#
-	nFwh <- sum(tab$sex==1 & tab$wh==1)#
-	nMwh <- sum(tab$sex==0 & tab$wh==1)#
-	out <- c(nF=nF, nM=nM, nFwh=nFwh, nMwh=nMwh)#
-}#
-cats <- list("actors", "tennis", "science")#
-cts <- t(sapply(cats, countsuggestions))#
-x <- data.frame(cts)#
-xx <- cbind(data.frame(cat=unlist(cats)), x)#
-names(xx) <- c("cat", dimnames(cts)[[2]])#
-xx
 # Clean the memory#
 rm(list=ls())#
 #
@@ -813,6 +25,55 @@ t.aaas <- getdata("aaas")#
 t.ted <- getdata("ted")#
 t.tennis <- getdata("tennis")#
 t.actors <- getdata("actors")#
+t.hhmi <- getdata("hhmi")
+t.aaas
+# Clean the memory#
+rm(list=ls())#
+#
+# OBTAIN AND COMBINE DATA#
+#
+# Combine data for a given "category"#
+getdata <- function(catname){#
+	tmp <- read.csv(paste(catname, ".csv", sep=""), header=FALSE, stringsAsFactors=FALSE)#
+	# Find duplicates#
+	dupl <- duplicated(tmp$V1)#
+#
+	wife <- scan(paste(catname, "_wife.txt", sep=""))#
+	husband <- scan(paste(catname, "_husband.txt", sep=""))#
+	n <- length(wife) - sum(dupl)#
+	# Combine data, removing duplicates#
+	t1 <- cbind(tmp[!dupl,], wife=1-wife[!dupl], husband=1-husband[!dupl])#
+	t2 <- cbind(t1, wh=((t1$wife==1)|(t1$husband==1)), sex=(t1[,2]=="F")) # F=1, M=0#
+	names(t2)[1:3] <- c("name", "MF", "cat")#
+	return(t2)#
+}#
+#
+t.aaas <- getdata("aaas")#
+t.ted <- getdata("ted")#
+t.tennis <- getdata("tennis")#
+t.actors <- getdata("actors")#
+t.hhmi <- getdata("hhmi")
+t.hhmi
+# Combine data for a given "category"#
+getdata <- function(catname){#
+	tmp <- read.csv(paste(catname, ".csv", sep=""), header=FALSE, stringsAsFactors=FALSE)#
+	# Find duplicates#
+	dupl <- duplicated(tmp$V1)#
+#
+	wife <- scan(paste(catname, "_wife.txt", sep=""))#
+	husband <- scan(paste(catname, "_husband.txt", sep=""))#
+	n <- length(wife) - sum(dupl)#
+	# Combine data, removing duplicates#
+	t1 <- cbind(tmp[!dupl,], wife=1-wife[!dupl], husband=1-husband[!dupl])#
+	t2 <- cbind(t1, wh=((t1$wife==1)|(t1$husband==1)), sex=1*(t1[,2]=="F")) # F=1, M=0#
+	names(t2)[1:3] <- c("name", "MF", "cat")#
+	return(t2)#
+}#
+#
+t.aaas <- getdata("aaas")#
+t.ted <- getdata("ted")#
+t.tennis <- getdata("tennis")#
+t.actors <- getdata("actors")#
 t.hhmi <- getdata("hhmi")#
 #
 # Now we want to combine the Science data#
@@ -873,4 +134,229 @@ x <- data.frame(cts)#
 xx <- cbind(data.frame(cat=unlist(cats)), x)#
 names(xx) <- c("cat", dimnames(cts)[[2]])#
 xx
-q()
+# Compute number of F, M, F husband, ...#
+countsuggestions <- function(cat){#
+	tab <- get(paste("t.", cat, sep=""))#
+	nF <- sum(tab$sex==1)#
+	nM <- sum(tab$sex==0)#
+	nFwh <- sum(tab$sex==1 & tab$wh==1)#
+	nMwh <- sum(tab$sex==0 & tab$wh==1)#
+	out <- c(nF=nF, nM=nM, nFwh=nFwh, nMwh=nMwh, pFwh=nFwh/nF, pMwh=nMwh/nM)#
+}#
+cats <- list("actors", "tennis", "science")#
+cts <- t(sapply(cats, countsuggestions))#
+x <- data.frame(cts)#
+xx <- cbind(data.frame(cat=unlist(cats)), x)#
+names(xx) <- c("cat", dimnames(cts)[[2]])#
+xx
+?lm
+aov(formula = wf ~ sex, data=t.tennis)
+name(t.tennis)
+names(t.tennis)
+aov(formula = wh ~ sex, data=t.tennis)
+summary(aov(formula = wh ~ sex, data=t.tennis))
+summary(aov(formula = wh ~ sex, data=t.actors))
+summary(aov(formula = wh ~ sex, data=t.science))
+?glm
+glm(formula = wh ~ sex + ted, data=t.science, subset=t.science$hhmi=1)
+# For the science data, we want to compare more precisely the effect of fame#
+glm(formula = wh ~ sex + ted, data=t.science, subset = (t.science$hhmi==1))
+glm(formula = wh ~ sex + TED, data=t.science, subset = (t.science$hhmi==1))
+glm(formula = wh ~ sex + TED, data=t.science[t.science$hhmi==1])
+# For the science data, we want to compare more precisely the effect of fame#
+glm(formula = wh ~ sex + TED, data=t.science[t.science$hhmi==1,])
+glm(formula = wh ~ sex + TED, data=t.science[t.science$hhmi==1,], family=binomial)
+glm(formula = wh ~ sex + TED, data=t.science[t.science$hhmi==1,], family = binomial)
+t.science[t.science$hhmi==1,]
+glm(formula = wh ~ sex + TED, data=t.science[t.science$HHMI==1,], family = binomial)
+summary(glm(formula = wh ~ sex + TED, data=t.science[t.science$HHMI==1,], family = binomial))
+summary(glm(formula = wh ~ sex + TED, data=t.science[t.science$HHMI==1 | t.science$AAAS==1,], family = binomial))
+summary(aov(formula = wh ~ sex, data=t.science))#
+summary(glm(formula = wh ~ sex, data=t.science, family = binomial))
+summary(glm(formula = wh ~ sex, data=t.science[t.science$HHMI==1 | t.science$AAAS==1,], family = binomial))
+# For the science data, we want to compare more precisely the effect of fame, measured by "TED"#
+summary(glm(formula = wh ~ sex + TED, data=t.science[t.science$HHMI==1 | t.science$AAAS==1,], family = binomial))
+summary(aov(formula = wh ~ sex, data=t.science[t.science$HHMI==1,]))
+summary(glm(formula = wh ~ sex + TED, data=t.science[t.science$HHMI==1,], family = binomial))
+names(t.tennis)
+cols <- c("sex", "wh", "cat")#
+t.all <- rbind(t.tennis[, cols], t.actors[, cols], t.science[, cols])
+t.all
+cols <- c("sex", "wh", "cat")#
+t.all <- rbind(t.tennis[, cols], t.actors[, cols], t.science[, cols])#
+counts <- table(t.all$wf, t.all$cat)#
+barplot(counts)
+counts <- table(t.all$wh, t.all$cat)#
+barplot(counts)
+counts
+xx
+barplot(xx[, c("pFwh", "pMwh")])
+is.matrix(xx[, c("pFwh", "pMwh")])
+barplot(as.matrix(xx[, c("pFwh", "pMwh")]))
+barplot(t(as.matrix(xx[, c("pFwh", "pMwh")])), beside=TRUE)
+?barplot
+barplot(t(as.matrix(xx[, c("pFwh", "pMwh")])), beside=TRUE, col=c(colF, colM), names.arg=c("tennis", "cinema", "science"))
+colM <- rgb(0, 150, 150, maxColorValue = 255)#
+colF <- rgb(249, 113, 0, maxColorValue = 255)
+barplot(t(as.matrix(xx[, c("pFwh", "pMwh")])), beside=TRUE, col=c(colF, colM), names.arg=c("tennis", "cinema", "science"))
+colM <- rgb(0, 150, 150, 100, maxColorValue = 255)#
+colF <- rgb(249, 80, 0, maxColorValue = 255)#
+#
+cols <- c("sex", "wh", "cat")#
+t.all <- rbind(t.tennis[, cols], t.actors[, cols], t.science[, cols])#
+counts <- table(t.all$wh, t.all$cat)#
+barplot(counts)#
+barplot(t(as.matrix(xx[, c("pFwh", "pMwh")])), beside=TRUE, col=c(colF, colM), names.arg=c("tennis", "cinema", "science"))
+cols <- c("sex", "wh", "cat")#
+t.all <- rbind(t.tennis[, cols], t.actors[, cols], t.science[, cols])#
+counts <- table(t.all$wh, t.all$cat)#
+par(las=1)#
+barplot(t(as.matrix(xx[, c("pFwh", "pMwh")])), ##
+        beside=TRUE, col=c(colF, colM), names.arg=c("tennis", "cinema", "science"), ylim=c(0,1))
+names(xx)
+dimnames(xx)
+xx$cat
+as.character(xx$cat)
+barplot(t(as.matrix(xx[, c("pFwh", "pMwh")])), ##
+        beside=TRUE, col=c(colF, colM), names.arg=as.character(xx$cat), ylim=c(0,1))
+barplot(t(as.matrix(xx[, c("pFwh", "pMwh")])), ##
+        beside=TRUE, col=c(colF, colM), names.arg=as.character(xx$cat), ylim=c(0,1), main="Proportion of individuals for whom 'wife' or 'husband' appear as suggestion in a Google search")
+barplot(t(as.matrix(xx[, c("pFwh", "pMwh")])), ##
+        beside=TRUE, col=c(colF, colM), names.arg=as.character(xx$cat), ylim=c(0,1), main="Proportion of individuals for whom \n'wife' or 'husband' appear as suggestion in a Google search")
+barplot(t(as.matrix(xx[, c("pFwh", "pMwh")])), ##
+        beside=TRUE, col=c(colF, colM), names.arg=as.character(xx$cat), ylim=c(0,1), main="Proportion of individuals for whom \n'wife' or 'husband' appear as suggestion in a Google search", cex.main=0.7)
+barplot(t(as.matrix(xx[, c("pFwh", "pMwh")])), ##
+        beside=TRUE, col=c(colF, colM), names.arg=as.character(xx$cat), ylim=c(0,1), main="Proportion of individuals for whom \n'wife' or 'husband' appear as suggestion in a Google search", cex.main=0.9)
+par(las=1)#
+barplot(t(as.matrix(xx[, c("pFwh", "pMwh")])), ##
+        beside=TRUE, col=c(colF, colM), names.arg=as.character(xx$cat), ylim=c(0,1), main="Proportion of individuals for whom \n'wife' or 'husband' appear as suggestion in a Google search", cex.main=0.85)
+dim(t.tennis)
+dim(t.actors)
+dim(t.aaas)
+dim(t.hhmi)
+dim(t.ted)
+sum(t.ted$sex==1)
+sum(t.ted$sex==1)/length(t.ted$sex)
+summary(aov(formula = wh ~ sex, data=t.tennis))
+summary(aov(formula = wh ~ sex, data=t.actors))
+summary(aov(formula = wh ~ sex, data=t.tennis))
+dim(t.science)
+summary(aov(formula = wh ~ sex, data=t.science))
+summary(aov(formula = wh ~ sex, data=t.science[t.science$HHMI==1,]))
+summary(glm(formula = wh ~ sex + TED, data=t.science[t.science$HHMI==1,], family = binomial))
+test <- tapply(st$wh, list(st$sex, set$TED), mean)
+st <- t.science[t.science$HHMI==1,]#
+test <- tapply(st$wh, list(st$sex, set$TED), mean)
+st
+st[1,]
+?tapply
+st$wh
+list(st$sex, set$TED)
+test <- tapply(st$wh, list(st$sex, st$TED), mean)
+test
+summary(glm(formula = wh ~ sex + TED + sex*TED, data=t.science[t.science$HHMI==1,], family = binomial))
+summary(glm(formula = wh ~ sex*TED, data=t.science[t.science$HHMI==1,], family = binomial))
+st[st$sex==0 & st$TED==1,]
+st[st$sex==1 & st$TED==1,]
+summary(glm(formula = wh ~ sex*TED, data=t.science, family = binomial))
+summary(glm(formula = wh ~ sex+TED, data=t.science, family = binomial))
+tapply(st$wh, list(st$sex, st$TED), length)
+tapply(t.science$wh, list(t.science$sex, t.science$TED), length)
+tapply(t.science$wh, list(sex=t.science$sex, TED=t.science$TED), length)
+dissectscience <- tapply(t.science$wh, list(sex=t.science$sex, TED=t.science$TED), mean)
+dissectscience
+barplot(dissectscience)
+barplot(dissectscience, beside=TRUE)
+xx
+barplot(t(as.matrix(xx[, c("pMwh", "pFwh")])), ##
+        beside=TRUE, col=c(colM, colF), names.arg=as.character(xx$cat), ylim=c(0,1), main="Proportion of individuals for whom \n'wife' or 'husband' appear as suggestion in a Google search", cex.main=0.85)
+dissectscience <- tapply(t.science$wh, list(sex=t.science$sex, TED=t.science$TED), mean)#
+barplot(dissectscience, beside=TRUE, col=c(colM, colF))
+countsuggestions(t.ted)
+countsuggestions(ted)
+countsuggestions("ted")
+a <countsuggestions("ted")
+a <-countsuggestions("ted")
+a
+dissectscience <- tapply(t.science$wh, list(sex=t.science$sex, TED=t.science$TED), length)
+dissectscience
+dissectscience <- tapply(t.science$wh, list(TED=t.science$TED, sex=t.science$sex), mean)#
+barplot(dissectscience, beside=FALSE, col=c(colM, colF))
+?barplot
+barplot(dissectscience, beside=FALSE, col=c(colM, colM, colF, colF))
+barplot(t(as.matrix(xx[, c("pMwh", "pFwh")])), ##
+        beside=TRUE, col=c(colM, colF), names.arg=as.character(xx$cat), ylim=c(0,1), main="Proportion of individuals for whom \n'wife' or 'husband' appear as suggestion in a Google search", cex.main=0.85)
+dissectscience <- tapply(t.science$wh, list(TED=t.science$TED, sex=t.science$sex), length)
+dissectscience
+totsex <- colSums(dissectscience)
+totsex
+a <- c(1,2,3,4); b<- c(1,2)
+a/b
+dissectscience / totsex
+dissectscience / matrix(rep(totsex, 2), byrow=TRUE, ncol=2)
+barplot(dissectscience, beside=FALSE, col=c(colM, colM, colF, colF))
+barplot(t(dissectscience), beside=FALSE, col=c(colM, colM, colF, colF))
+dissectscience <- tapply(t.science$wh, list(TED=t.science$TED, sex=t.science$sex), length)#
+totsex <- colSums(dissectscience)#
+dissectscience <- dissectscience / matrix(rep(totsex, 2), byrow=TRUE, ncol=2)#
+barplot(t(dissectscience), beside=FALSE, col=c(colM, colM, colF, colF))
+barplot(dissectscience, beside=FALSE, col=c(colM, colM, colF, colF))
+dissectscience <- tapply(t.science$wh, list(TED=t.science$TED, sex=t.science$sex), sum)#
+totsex <- colSums(dissectscience)#
+dissectscience <- dissectscience / matrix(rep(totsex, 2), byrow=TRUE, ncol=2)#
+barplot(dissectscience, beside=FALSE, col=c(colM, colM, colF, colF))
+dissectscience <- tapply(t.science$wh, list(TED=t.science$TED, sex=t.science$sex), sum)
+dissectscience
+cts
+x
+xx
+dissectscience <- dissectscience / matrix(rep(c(xx["science", "nM"], xx["science", "nF"]), 2), byrow=TRUE, ncol=2)
+dissectscience
+xx["science", "nM"], xx["science", "nF"]
+xx["science", "nM"]
+xx
+dissectscience <- tapply(t.science$wh, list(TED=t.science$TED, sex=t.science$sex), sum)#
+dissectscience <- dissectscience / matrix(rep(c(xx[xx$cat=="science", "nM"], xx[xx$cat"science", "nF"]), 2), byrow=TRUE, ncol=2)
+dissectscience <- tapply(t.science$wh, list(TED=t.science$TED, sex=t.science$sex), sum)#
+dissectscience <- dissectscience / matrix(rep(c(xx[xx$cat=="science", "nM"], xx[xx$cat=="science", "nF"]), 2), byrow=TRUE, ncol=2)
+dissectscience
+barplot(dissectscience, beside=FALSE, col=c(colM, colM, colF, colF))
+barplot(dissectscience, beside=FALSE, col=c(colM, colF, colM, colF))
+barplot(dissectscience, beside=FALSE, col=matrix(c(colM, colF, colM, colF), ncol=2))
+barplot(dissectscience, beside=FALSE, col=matrix(c(colM, colM, colF, colF), ncol=2))
+dmod <- cbind(c(dissectscience[,1], 0, 0), c(0, 0, dissectscience[,2]))#
+barplot(dmod, beside=FALSE, col=matrix(c(colM, colM, colF, colF), ncol=2))
+barplot(dmod, beside=FALSE, col=matrix(c(colM, colM, colF, colF), ncol=2), density=matrix(c(0, 8, 0, 8), ncol=2))
+barplot(dmod, beside=FALSE, col=matrix(c(colM, colM, colF, colF), ncol=2), density=matrix(c(100, 8, 100, 8), ncol=2))
+barplot(dmod, beside=FALSE, col=matrix(c(colM, colM, colF, colF), ncol=2))
+barplot(dmod, beside=FALSE, col='black', density=matrix(c(0, 8, 0, 8), ncol=2))
+barplot(dmod, beside=FALSE, col='none', density=matrix(c(0, 8, 0, 8), ncol=2))
+barplot(dmod, beside=FALSE, col=matrix(c(colM, colM, colF, colF), ncol=2))#
+plot(new=TRUE)#
+barplot(dmod, beside=FALSE, col='none', density=matrix(c(0, 8, 0, 8), ncol=2))
+?barplot
+barplot(dmod, beside=FALSE, col=matrix(c(colM, colM, colF, colF), ncol=2))#
+barplot(dmod, beside=FALSE, col='none', density=matrix(c(0, 8, 0, 8), ncol=2), add=TRUE)
+barplot(dmod, beside=FALSE, col=matrix(c(colM, colM, colF, colF), ncol=2))#
+barplot(dmod, beside=FALSE, col='black', density=matrix(c(0, 8, 0, 8), ncol=2), add=TRUE)
+barplot(dmod, beside=FALSE, col=matrix(c(colM, colM, colF, colF), ncol=2))#
+barplot(dmod, beside=FALSE, col='black', density=matrix(c(4, 0, 4, 0), ncol=2), add=TRUE)
+barplot(dmod, beside=FALSE, col=matrix(c(colM, colM, colF, colF), ncol=2))#
+barplot(dmod, beside=FALSE, col='black', density=matrix(c(4, 0, 4, 0), ncol=2), add=TRUE, border=NA)
+barplot(dmod, beside=FALSE, col=matrix(c(colM, colM, colF, colF), ncol=2), border=NA)#
+barplot(dmod, beside=FALSE, col='black', density=matrix(c(4, 0, 4, 0), ncol=2), add=TRUE, border=NA)
+barplot(dmod, beside=FALSE, col=matrix(c(colM, colM, colF, colF), ncol=2))#
+barplot(dmod, beside=FALSE, col='black', density=matrix(c(4, 0, 4, 0), ncol=2), add=TRUE, border=NA)
+barplot(dmod, beside=FALSE, col=matrix(c(colM, colM, colF, colF), ncol=2), names.arg=c("Men", "Women"))#
+barplot(dmod, beside=FALSE, col='black', density=matrix(c(4, 0, 4, 0), ncol=2), add=TRUE, border=NA)
+barplot(t(as.matrix(xx[, c("pMwh", "pFwh")])), ##
+        beside=TRUE, col=c(colM, colF), names.arg=as.character(xx$cat), ylim=c(0,1), main="Proportion of individuals for whom \n'wife' or 'husband' appear as suggestion in a Google search", cex.main=0.85)
+barplot(dmod, beside=FALSE, col=matrix(c(colM, colM, colF, colF), ncol=2), names.arg=c("Men", "Women"))#
+barplot(dmod, beside=FALSE, col='black', density=matrix(c(4, 0, 4, 0), ncol=2), add=TRUE, border=NA)
+summary(glm(formula = wh ~ sex*TED, data=t.science, family = binomial))
+barplot(t(as.matrix(xx[, c("pMwh", "pFwh")])), ##
+        beside=TRUE, col=c(colM, colF), names.arg=as.character(xx$cat), ylim=c(0,1), main="Proportion of individuals for whom \n'wife' or 'husband' appear as suggestion in a Google search", cex.main=0.85)
+plot(t.tennis$wh[t.tennis$sex==0])
+plot(t.tennis$wh[t.tennis$sex==1])
+t.tennis$name[t.tennis$sex==1]
+t.tennis$name[t.tennis$wh==1]

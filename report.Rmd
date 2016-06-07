@@ -1,0 +1,131 @@
+---
+title: "Are Google Suggestions Sexist?"
+author: "FD"
+date: "7 June 2016"
+output: html_document
+---
+
+Google's autocomplete feature sometimes yields disturbing results. When looking for female scientists, you may have noticed the appearance of "husband" in the list of suggestions, as reported recently [on Twitter](https://twitter.com/pollyp1/status/733636162263351296). But does this only happen to female scientists, or instead to any public figure?
+
+To answer this question, I gathered names of people with different professions (scientists, tennis players, Hollywood actors), wrote a script to fetch the list of Google suggestions, and compared the proportion of people for whom "husband" or "wife" are suggested as a function of their profession. 
+
+ ```{r echo=FALSE, include=FALSE}
+# Clean the memory
+rm(list=ls())
+
+# For the report
+#install.packages("rmarkdown")
+library(rmarkdown, quietly=TRUE)
+
+
+#===============================#
+# OBTAIN AND COMBINE DATA		#
+#===============================#
+
+# Combine data for a given "category"
+getdata <- function(catname){
+	tmp <- read.csv(paste(catname, ".csv", sep=""), header=FALSE, stringsAsFactors=FALSE)
+	# Find duplicates
+	dupl <- duplicated(tmp$V1)
+
+	wife <- scan(paste(catname, "_wife.txt", sep=""))
+	husband <- scan(paste(catname, "_husband.txt", sep=""))
+	n <- length(wife) - sum(dupl)
+	
+	# Combine data, removing duplicates
+	t1 <- cbind(tmp[!dupl,], wife=1-wife[!dupl], husband=1-husband[!dupl])
+	t2 <- cbind(t1, wh=((t1$wife==1)|(t1$husband==1)), sex=1*(t1[,2]=="F")) # F=1, M=0
+	names(t2)[1:3] <- c("name", "MF", "cat")
+	return(t2)
+}
+
+# Do it for all our datasets
+t.aaas <- getdata("aaas")
+t.ted <- getdata("ted")
+t.tennis <- getdata("tennis")
+t.actors <- getdata("actors")
+t.hhmi <- getdata("hhmi")
+
+# Now we want to combine the Science data (ted, hhmi, aaas)
+ # There are people who belong to different categories: we need to merge them
+ # So first, find them
+  tmpTA <- rbind(t.ted, t.aaas) # Combine TED and AAAS datasets
+  duTA <- duplicated(tmpTA[, 1]) # Find replicated names
+  namesTA <- tmpTA[duTA, 1] # Get the corresponding names
+  #print(namesTA) # Print replicates
+  tmp <- tmpTA[!duTA,] # Remove replicates
+
+  tmpTH <- rbind(tmp, t.hhmi) # Add HHMI data
+  duTH <- duplicated(tmpTH$name) # Find replicated names
+  namesTH <- tmpTH[duTH, 1] # Get the corresponding names 
+  #print(namesTH) # Print replicates
+  tmp <- tmpTH[!duTH,] # Remove replicates
+
+ # Now we need to add the removed info again!
+  t.science <- data.frame(cbind(tmp[, c("name", "sex")], "science", tmp[, c("wife", "husband", "wh")], 1*(tmp[3]=="AAAS"), 1*(tmp[3]=="HHMI"), 1*(tmp[3]=="TED")))
+  names(t.science) <- c("name", "sex", "cat", "wife", "husband", "wh", "AAAS", "HHMI", "TED")
+  # Add removed AAAS data
+  for (dTA in namesTA){
+	t.science[t.science$name==dTA, "AAAS"] <- 1
+  }
+# Add removed HHMI data
+  for (dTH in namesTH){
+	t.science[t.science$name==dTH, "HHMI"] <- 1
+  }
+
+manualcontrol <- FALSE
+if(manualcontrol){
+	# Manual control of remaining potential duplicates
+	library(stringr)
+	# Extract last word in name (mostly last name)
+	nm <- unname(vapply(t.science$name, function(l) word(l, -1), FUN.VALUE="c(1)"))
+	# Sort by alphabetical order
+	onm <- nm[order(nm)]
+	# Sort the entire table by alphabetical order
+	temp <- t.science[order(nm),]
+	# Find duplicates in last names (all values, hence the | and fromLast) and print them
+	temp[duplicated(onm) | duplicated(onm, fromLast=TRUE),]
+	# Then inspect the table and potentially correct the files if typoes
+	# But this is not necessary anymore since it's already been done.
+}
+ ```
+
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+summary(cars)
+```
+
+You can also embed plots, for example:
+
+```{r, echo=FALSE}
+plot(cars)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+# Methods
+## Data collection
+### Tennis players
+I downloaded on 2016-06-06 the names of the 50 best-ranked male and female tennis players (according to the [ATP](http://www.atpworldtour.com/en/rankings/singles) and [WTA](http://www.wtatennis.com/singles-rankings) rankings). [(download the list of names)](tennis.csv).
+
+### Actors
+I downloaded on 2016-06-06 a [list of the 100 most valuable movie stars](http://www.vulture.com/2012/07/most-valuable-movie-stars.html), assigned sexes based on first names and pictures. The list contains `r sum(t.actors$sex)` women names and `r sum(1-t.actors$sex)` men names. [(download the list of names)](actors.csv).
+
+### Scientists
+I downloaded on 2016-06-06 three datasets: 
+
+- The names of all AAAS members in the [Evolutionary and Population Biology and Ecology section](https://www.amacad.org/multimedia/pdfs/classlist.pdf) (`r sum(t.aaas$sex)` women, `r sum(1-t.aaas$sex)` men, [download the list of names](aaas.csv).);
+
+- The names of all [HHMI scientists](https://www.hhmi.org/scientists/browse?kw=&sort_by=field_scientist_last_name&sort_order=ASC&items_per_page=100) (`r sum(t.hhmi$sex)` women, `r sum(1-t.hhmi$sex)` men, [download the list of names](hhmi.csv).);
+
+- The names of all TED speakers in the [Science section](https://www.ted.com/talks?sort=popular&topics%5B%5D=science&language=en) (`r sum(t.ted$sex)` women, `r sum(1-t.ted$sex)` men, [download the list of names](ted.csv).).
+
+Some names appear in more than one of these lists. I combined all names in a table, removed duplicates, and indicated with 0s and 1s the affiliations of each scientist, e.g.
+
+```{r, echo=FALSE}
+t.science[t.science$name=="Edward O. Wilson", ]
+```

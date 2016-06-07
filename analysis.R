@@ -1,6 +1,11 @@
 # Clean the memory
 rm(list=ls())
 
+# For the report
+#install.packages("rmarkdown")
+library(rmarkdown)
+
+
 #===============================#
 # OBTAIN AND COMBINE DATA		#
 #===============================#
@@ -101,11 +106,35 @@ summary(aov(formula = wh ~ sex, data=t.science))
 summary(aov(formula = wh ~ sex, data=t.science[t.science$HHMI==1,]))
 
 # For the science data, we want to compare more precisely the effect of fame, measured by "TED"
-summary(glm(formula = wh ~ sex + TED, data=t.science[t.science$HHMI==1,], family = binomial))
+summary(glm(formula = wh ~ sex*TED, data=t.science, family = binomial))
 
 
-# # colM <- rgb(0, 150, 150, maxColorValue = 255)
-# colF <- rgb(249, 113, 0, maxColorValue = 255)
+summary(glm(formula = wh ~ sex+TED, data=t.science, family = binomial))
+summary(glm(formula = wh ~ sex*TED, data=t.science[t.science$HHMI==1,], family = binomial))
+summary(glm(formula = wh ~ sex + TED + sex*TED, data=t.science[t.science$HHMI==1,], family = binomial))
+
+st <- t.science[t.science$HHMI==1,]
+test <- tapply(st$wh, list(st$sex, st$TED), mean)
+tapply(st$wh, list(st$sex, st$TED), length)
+
+# PLOTS
+colM <- rgb(0, 150, 150, 100, maxColorValue = 255)
+colF <- rgb(249, 80, 0, maxColorValue = 255)
+
+cols <- c("sex", "wh", "cat")
+#t.all <- rbind(t.tennis[, cols], t.actors[, cols], t.science[, cols])
+#counts <- table(t.all$wh, t.all$cat)
+par(las=1)
+barplot(t(as.matrix(xx[, c("pMwh", "pFwh")])), #
+        beside=TRUE, col=c(colM, colF), names.arg=as.character(xx$cat), ylim=c(0,1), main="Proportion of individuals for whom \n'wife' or 'husband' appear as suggestion in a Google search", cex.main=0.85)
+
+
+dissectscience <- tapply(t.science$wh, list(TED=t.science$TED, sex=t.science$sex), sum)
+dissectscience <- dissectscience / matrix(rep(c(xx[xx$cat=="science", "nM"], xx[xx$cat=="science", "nF"]), 2), byrow=TRUE, ncol=2)
+dmod <- cbind(c(dissectscience[,1], 0, 0), c(0, 0, dissectscience[,2])) # Trick to make R believe that there are four categories, then we can tune the colors as we wish
+barplot(dmod, beside=FALSE, col=matrix(c(colM, colM, colF, colF), ncol=2), names.arg=c("Men", "Women"))
+barplot(dmod, beside=FALSE, col='black', density=matrix(c(4, 0, 4, 0), ncol=2), add=TRUE, border=NA)
+
 # plotfracs <- function(cat){
 	# lin <- xx[xx$cat==cat,]
 	# print(lin)
