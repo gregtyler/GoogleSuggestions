@@ -54,7 +54,7 @@ Kevin Campbell
 Gwyneth Card
 Albert Cardona
 Megan Carey
-Sean Carroll
+Sean B. Carroll
 Pedro Carvalho
 Jean-Laurent Casanova
 Thomas Cech
@@ -91,7 +91,7 @@ Edward De Robertis
 Karl Deisseroth
 Job Dekker
 Winfried Denk
-Joseph DeRisi
+Joe DeRisi
 Abby Dernburg
 Raymond Deshaies
 Barry Dickson
@@ -256,7 +256,7 @@ Hening Lin
 Susan Lindquist
 Dan Littman
 David Liu
-Zhe  Liu
+Zhe Liu
 Richard Locksley
 Loren Looger
 Richard Losick
@@ -341,7 +341,7 @@ Pavel Pevzner
 Samuel Pfaff
 Craig Pikaard
 Christopher Plowe
-Jonathan Pritchard
+Jonathan K. Pritchard
 Louis Ptáček
 Anna Pyle
 Stephen Quake

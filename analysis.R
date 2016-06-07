@@ -1,7 +1,9 @@
 # Clean the memory
 rm(list=ls())
 
-# OBTAIN AND COMBINE DATA
+#===============================#
+# OBTAIN AND COMBINE DATA		#
+#===============================#
 
 # Combine data for a given "category"
 getdata <- function(catname){
@@ -15,43 +17,44 @@ getdata <- function(catname){
 	
 	# Combine data, removing duplicates
 	t1 <- cbind(tmp[!dupl,], wife=1-wife[!dupl], husband=1-husband[!dupl])
-	t2 <- cbind(t1, wh=((t1$wife==1)|(t1$husband==1)))
-	names(t2)[1:3] <- c("name", "sex", "cat")
+	t2 <- cbind(t1, wh=((t1$wife==1)|(t1$husband==1)), sex=1*(t1[,2]=="F")) # F=1, M=0
+	names(t2)[1:3] <- c("name", "MF", "cat")
 	return(t2)
 }
 
+# Do it for all our datasets
 t.aaas <- getdata("aaas")
 t.ted <- getdata("ted")
 t.tennis <- getdata("tennis")
 t.actors <- getdata("actors")
 t.hhmi <- getdata("hhmi")
 
-# Now we want to combine the Science data
+# Now we want to combine the Science data (ted, hhmi, aaas)
  # There are people who belong to different categories: we need to merge them
  # So first, find them
-tmpTA <- rbind(t.ted, t.aaas) # Combine TED and AAAS datasets
-duTA <- duplicated(tmpTA[, 1]) # Find replicated names
-namesTA <- tmpTA[duTA, 1] # Get the corresponding names
-print(namesTA) # Print replicates
-tmp <- tmpTA[!duTA,] # Remove replicates
+  tmpTA <- rbind(t.ted, t.aaas) # Combine TED and AAAS datasets
+  duTA <- duplicated(tmpTA[, 1]) # Find replicated names
+  namesTA <- tmpTA[duTA, 1] # Get the corresponding names
+  print(namesTA) # Print replicates
+  tmp <- tmpTA[!duTA,] # Remove replicates
 
-tmpTH <- rbind(tmp, t.hhmi) # Add HHMI data
-duTH <- duplicated(tmpTH$name) # Find replicated names
-namesTH <- tmpTH[duTH, 1] # Get the corresponding names 
-print(namesTH) # Print replicates
-tmp <- tmpTH[!duTH,] # Remove replicates
+  tmpTH <- rbind(tmp, t.hhmi) # Add HHMI data
+  duTH <- duplicated(tmpTH$name) # Find replicated names
+  namesTH <- tmpTH[duTH, 1] # Get the corresponding names 
+  print(namesTH) # Print replicates
+  tmp <- tmpTH[!duTH,] # Remove replicates
 
  # Now we need to add the removed info again!
-t.science <- data.frame(cbind(tmp[, c("name", "sex")], "science", tmp[, c("wife", "husband", "wh")], 1*(tmp[3]=="AAAS"), 1*(tmp[3]=="HHMI"), 1*(tmp[3]=="TED")))
-names(t.science) <- c("name", "sex", "cat", "wife", "husband", "wh", "AAAS", "HHMI", "TED")
-# Add removed AAAS data
-for (dTA in namesTA){
+  t.science <- data.frame(cbind(tmp[, c("name", "sex")], "science", tmp[, c("wife", "husband", "wh")], 1*(tmp[3]=="AAAS"), 1*(tmp[3]=="HHMI"), 1*(tmp[3]=="TED")))
+  names(t.science) <- c("name", "sex", "cat", "wife", "husband", "wh", "AAAS", "HHMI", "TED")
+  # Add removed AAAS data
+  for (dTA in namesTA){
 	t.science[t.science$name==dTA, "AAAS"] <- 1
-}
+  }
 # Add removed HHMI data
-for (dTH in namesTH){
+  for (dTH in namesTH){
 	t.science[t.science$name==dTH, "HHMI"] <- 1
-}
+  }
 
 manualcontrol <- FALSE
 if(manualcontrol){
@@ -69,16 +72,19 @@ if(manualcontrol){
 	# But this is not necessary anymore since it's already been done.
 }
 
-# Compute number of F, M, F husband, ...
+#===============================#
+# STATS AND OTHER CALCULATIONS  #
+#===============================#
+
+# Count the number of F/M, wife+husband
 countsuggestions <- function(cat){
 	tab <- get(paste("t.", cat, sep=""))
-	nF <- sum(tab$sex=="F")
-	nM <- sum(tab$sex=="M")
-	nFwh <- sum(tab$sex=="F" & tab$wh==1)
-	nMwh <- sum(tab$sex=="M" & tab$wh==1)
-	out <- c(nF=nF, nM=nM, nFwh=nFwh, nMwh=nMwh)
+	nF <- sum(tab$sex==1)
+	nM <- sum(tab$sex==0)
+	nFwh <- sum(tab$sex==1 & tab$wh==1)
+	nMwh <- sum(tab$sex==0 & tab$wh==1)
+	out <- c(nF=nF, nM=nM, nFwh=nFwh, nMwh=nMwh, pFwh=nFwh/nF, pMwh=nMwh/nM)
 }
-
 
 cats <- list("actors", "tennis", "science")
 cts <- t(sapply(cats, countsuggestions))
@@ -87,26 +93,37 @@ xx <- cbind(data.frame(cat=unlist(cats)), x)
 names(xx) <- c("cat", dimnames(cts)[[2]])
 xx
 
-colM <- rgb(0, 150, 150, maxColorValue = 255)
-colF <- rgb(249, 113, 0, maxColorValue = 255)
-plotfracs <- function(cat){
-	lin <- xx[xx$cat==cat,]
-	print(lin)
-	dx <- 0.15
-	xpos <- c(1-dx, 1+dx, 2-dx, 2+dx)
-	ypos <- with(lin, c(nMh/nM, nMw/nM, nFh/nF, nFw/nF))
-	plot(xpos, ypos, ylim=c(0,1), col=c(colM, colM, colF, colF), type="h", pch=15, lwd=5, axes = FALSE, ylab="Proportion", xlab="")
-	lines(xpos, 0*xpos)
-	axis(2, las=1)
-	axis(1, at=xpos, labels=c("h", "w", "h", "w"), lwd=0, line=-1)
-	axis(1, at=c(1, 2), labels=c("M", "F"), line=0.5, tick=FALSE)
-	title(cat)
-}
+# STATS...
+# ANOVAS on the data
+summary(aov(formula = wh ~ sex, data=t.tennis))
+summary(aov(formula = wh ~ sex, data=t.actors))
+summary(aov(formula = wh ~ sex, data=t.science))
+summary(aov(formula = wh ~ sex, data=t.science[t.science$HHMI==1,]))
 
-plotfracs("tennis")
-plotfracs("aaas")
-plotfracs("hhmi")
-plotfracs("ted")
-plotfracs("actors")
+# For the science data, we want to compare more precisely the effect of fame, measured by "TED"
+summary(glm(formula = wh ~ sex + TED, data=t.science[t.science$HHMI==1,], family = binomial))
+
+
+# # colM <- rgb(0, 150, 150, maxColorValue = 255)
+# colF <- rgb(249, 113, 0, maxColorValue = 255)
+# plotfracs <- function(cat){
+	# lin <- xx[xx$cat==cat,]
+	# print(lin)
+	# dx <- 0.15
+	# xpos <- c(1-dx, 1+dx, 2-dx, 2+dx)
+	# ypos <- with(lin, c(nMh/nM, nMw/nM, nFh/nF, nFw/nF))
+	# plot(xpos, ypos, ylim=c(0,1), col=c(colM, colM, colF, colF), type="h", pch=15, lwd=5, axes = FALSE, ylab="Proportion", xlab="")
+	# lines(xpos, 0*xpos)
+	# axis(2, las=1)
+	# axis(1, at=xpos, labels=c("h", "w", "h", "w"), lwd=0, line=-1)
+	# axis(1, at=c(1, 2), labels=c("M", "F"), line=0.5, tick=FALSE)
+	# title(cat)
+# }
+
+# plotfracs("tennis")
+# plotfracs("aaas")
+# plotfracs("hhmi")
+# plotfracs("ted")
+# plotfracs("actors")
 
 
