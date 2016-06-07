@@ -17,6 +17,7 @@ t.aaas <- getdata("aaas")
 t.ted <- getdata("ted")
 t.tennis <- getdata("tennis")
 t.actors <- getdata("actors")
+t.hhmi <- getdata("hhmi")
 
 # Compute number of F, M, F husband, ...
 countsuggestions <- function(cat){
@@ -30,7 +31,7 @@ countsuggestions <- function(cat){
 	out <- c(nF=nF, nM=nM, nFw=nFw, nMw=nMw, nFh=nFh, nMh=nMh)
 }
 
-cats <- list("actors", "tennis", "ted", "aaas")
+cats <- list("actors", "tennis", "ted", "aaas", "hhmi")
 cts <- t(sapply(cats, countsuggestions))
 x <- data.frame(cts)
 xx <- cbind(data.frame(cat=unlist(cats)), x)
@@ -54,6 +55,7 @@ plotfracs <- function(cat){
 }
 plotfracs("tennis")
 plotfracs("aaas")
+plotfracs("hhmi")
 plotfracs("ted")
 plotfracs("actors")
 
