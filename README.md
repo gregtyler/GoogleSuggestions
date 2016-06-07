@@ -31,3 +31,7 @@ all in II.4 Evolutionary and Population Biology and Ecology
 ### HHMI
 https://www.hhmi.org/scientists/browse?kw=&sort_by=field_scientist_last_name&sort_order=ASC&items_per_page=100
 
+## CREDITS
+- Francois Bienvenu wrote a first version of the script fetching Google Suggestions in OCaml (available in the `oldstuff/` folder. He gave me the tip about the http://suggestqueries.google.com webpage.
+- Nicolas Rode gave a few helpful tips for the analysis. 
+All remaining errors are my fault. 
