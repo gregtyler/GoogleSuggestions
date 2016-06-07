@@ -223,5 +223,12 @@ Please note that although I made sure to specify `hl=en` in the query (i.e., set
 in a terminal, where `fileprefix` is either `tennis`, `actors`, `aaas`, `hhmi`, or `ted`.
 
 ## Analysis
-You just need to look at the source code of this file! It is written in Rmarkdown, so the analysis code is contained in it. 
+You just need to look at the [source code](report.Rmd) of this file! It is written in Rmarkdown, so the analysis code is contained in it. 
 
+
+
+
+
+    
+    
+    

@@ -1,15 +1,14 @@
 # GoogleSuggestions
 
-(Notes: no need to download wget from http://rudix.org/packages/wget.html anymore)
+## For more details: 
+go read the report 
+http://htmlpreview.github.io/?https://github.com/flodebarre/GoogleSuggestions/blob/master/report.html
 
-## TODO:
-- need to add science data. NAS again? AAAS other categories?
-- stats!
- 
 ## Contents:
 - script.sh to fetch google suggestions
 type ./script.sh typedata.csv (replacing typedata by actors/ted/aaas/tennis)
-- analysis.R to run the analysis and plot the figures (work in progress).
+- report.Rmd to run the analysis and print the report.
+- .csv datasets: lists of names
 
 ## Sources:
 
@@ -24,11 +23,6 @@ http://www.vulture.com/2012/07/most-valuable-movie-stars.html
 Topic: Science, by: most viewed; first 3 pages
 https://www.ted.com/talks?sort=popular&topics[]=science&language=en
 (There are duplicates, they will be taken care of later)
-
-### NAS
-http://www.nasonline.org/member-directory/
-all in Primary: Evolutionary Biology
-REMOVED
 
 ### AAAS
 https://www.amacad.org/multimedia/pdfs/classlist.pdf
