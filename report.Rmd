@@ -7,7 +7,7 @@ output: html_document
 
 Google's autocomplete feature sometimes yields disturbing results. When looking for female scientists, you may have noticed the appearance of "husband" in the list of suggestions, as reported recently [on Twitter](https://twitter.com/pollyp1/status/733636162263351296). But does this only happen to female scientists, or instead to any public figure?
 
-To answer this question, I gathered names of high profile people with different professions (scientists, tennis players, Hollywood actors), wrote a script to fetch the list of Google suggestions, and compared the proportion of people for whom "husband" or "wife" are suggested as a function of their profession (see the [Methods](#Methods) section for more details). 
+To answer this question, I gathered names of high profile people with different professions (scientists, tennis players, Hollywood actors), wrote a script to fetch the list of Google suggestions, and compared the proportion of people for whom "husband" and/or "wife" are suggested as a function of their profession (see the [Methods](#Methods) section for more details). 
 
  ```{r echo=FALSE, include=FALSE}
 # Clean the memory
@@ -124,45 +124,51 @@ cols <- c("sex", "wh", "cat")
 #counts <- table(t.all$wh, t.all$cat)
 par(las=1)
 barplot(t(as.matrix(xx[, c("pMwh", "pFwh")])), #
-        beside=TRUE, col=c(colM, colF), names.arg=as.character(xx$cat), ylim=c(0,1), main="Proportion of individuals for whom \n'wife' or 'husband' appear as suggestion in a Google search", cex.main=0.85, legend = c("Men", "Women"))
+        beside=TRUE, col=c(colM, colF), names.arg=c("actors", "tennis players", "scientists"), ylim=c(0,1), main="Proportion of individuals for whom \n'wife' and/or 'husband' appear as suggestion in a Google search", cex.main=0.85, legend = c("Men", "Women"))
 ```
 
 ### Actors
-There is basically no difference between male (`r xx$pMwh[xx$cat=="actors"]`) and female (`r xx$pFwh[xx$cat=="actors"]`) actors in terms of frequency of "wife" or "husband" suggestions by Google:
+There is basically no difference between male (`r sprintf("%.2f",  xx$pMwh[xx$cat=="actors"])`) and female (`r sprintf("%.2f", xx$pFwh[xx$cat=="actors"])`) actors in terms of frequency of "wife" or "husband" suggestions by Google:
 ```{r}
-summary(aov(formula = wh ~ sex, data=t.actors))
+chisq.test(table(wh=t.actors$wh, sex=as.factor(t.actors$sex)))
+summary(glm(formula = wh ~ sex, data=t.actors, family = binomial))
 ```
 
 ### Tennis players
-There is a strong difference between male and female tennis players, but maybe not the one you'd expect: "husband" or "wife" appear in Google's suggestions for `r xx$nFwh[xx$cat=="tennis"]` women out of the `r sum(t.tennis$sex)` of the dataset, while they appear for `r xx$nMwh[xx$cat=="tennis"]` men (out of `r sum(1-t.tennis$sex)`). One reason may be that, for an equivalent ranking, the popularity of female tennis players is lower than the popularity of male tennis players. 
+There is a strong difference between male and female tennis players, but maybe not the one you'd expect: "husband" or "wife" appear in Google's suggestions for `r xx$nFwh[xx$cat=="tennis"]` women out of the `r sum(t.tennis$sex)` in the dataset, while they appear for `r xx$nMwh[xx$cat=="tennis"]` men (out of `r sum(1-t.tennis$sex)`). One reason may be that, for an equivalent ranking, the popularity of female tennis players is lower than the popularity of male tennis players. 
 ```{r}
-summary(aov(formula = wh ~ sex, data=t.tennis))
+chisq.test(table(wh=t.tennis$wh, sex=as.factor(t.tennis$sex)))
+summary(glm(formula = wh ~ sex, data=t.tennis, family = binomial))
 ```
 
 ### Scientists
 If we now turn to the scientists dataset, we first observe that the frequency at which the "wife" and "husband" suggestions appear is much lower (`r mean(t.science$wh)` for men and women combined) than for the actors dataset for instance. What about the difference between men and women in this dataset?
 ```{r}
-summary(aov(formula = wh ~ sex, data=t.science))
+chisq.test(table(wh=t.science$wh, sex=as.factor(t.science$sex)))
+summary(glm(formula = wh ~ sex, data=t.science, family = binomial))
 ```
-We do not detect a substantial difference in this dataset. 
+We do not detect an significant difference in this dataset. 
 
 ## Further dissecting the "science" dataset
 
 The suggestions highlighted on [Twitter](https://twitter.com/pollyp1/status/733636162263351296) were mainly about HHMI scientists, so let's focus on this subset of our science dataset for the moment: 
 ```{r}
-summary(aov(formula = wh ~ sex, data=t.science[t.science$HHMI==1,]))
+chisq.test(table(wh=t.science[t.science$HHMI==1, "wh"], sex=as.factor(t.science[t.science$HHMI==1, "sex"])))
+summary(glm(formula = wh ~ sex, data=t.science[t.science$HHMI==1,], family = binomial))
 ```
 
-There is indeed an effect of sex on the proportion of "wife" and "husband" in Google Suggestions for HHMI scientists. But if we look closer, we realize that out of the `r sum(t.science[t.science$sex==1 & t.science$HHMI==1, "wh"])` HHMI female scientists for whom "husband" or "wife" appears in Google's suggestions, `r sum(t.science[t.science$sex==1 & t.science$HHMI==1 & t.science$TED==1, "wh"])` have given TED talks, out of the `r length(t.science[t.science$sex==1 & t.science$HHMI==1 & t.science$TED==1, "wh"])` female HHMI scientists who have given TED talks. 
+There is indeed an effect of sex on the proportion of "wife" and "husband" in Google Suggestions for HHMI scientists. But if we look closer, we realize that out of the `r sum(t.science[t.science$sex==1 & t.science$HHMI==1, "wh"])` HHMI female scientists for whom "husband" or "wife" appears in Google's suggestions, `r sum(t.science[t.science$sex==1 & t.science$HHMI==1 & t.science$TED==1, "wh"])` have given TED talks, out of the `r length(t.science[t.science$sex==1 & t.science$HHMI==1 & t.science$TED==1, "wh"])` female HHMI scientists who have given TED talks. Out of the `r sum(t.science[t.science$sex==0 & t.science$HHMI==1, "wh"])` male HHMI scientists for whom "husband" or "wife" appears in Google's suggestions, `r sum(t.science[t.science$sex==0 & t.science$HHMI==1 & t.science$TED==1, "wh"])` have given TED talks, out of the `r length(t.science[t.science$sex==0 & t.science$HHMI==1 & t.science$TED==1, "wh"])` male HHMI scientists who have given TED talks.
 
-It may be the proportion of TED speakers among female HHMI scientists
+It may be the higher proportion of TED speakers among female HHMI scientists that is driving the result. Here is a summary of the different sample sizes among HHMI scientists:
 ```{r echo=FALSE}
 tab <- tapply(t.science[t.science$HHMI==1, "wh"], list(sex=t.science[t.science$HHMI==1,"sex"], ted=t.science[t.science$HHMI==1,"TED"]), length)
 rownames(tab) <- c("M", "W")
 colnames(tab) <- c("no", "yes")
 tab
 ```
-that is driving the result... but the numbers are too small in the HHMI subset of the science data to run conclusive analyses. We will hence go back to the entire science dataset, which includes AAAS (American Academy of Arts and Sciences) members (Section II.4) and all TED speakers of the science section. 
+but the numbers are too small in the HHMI subset of the science data to run conclusive analyses. 
+
+We will hence go back to the entire science dataset, which includes AAAS (American Academy of Arts and Sciences) members (Section II.4) and all TED speakers of the science section. 
 
 With this entire science dataset, we can explore the interactions between sex and the fact of having given a TED talk (i.e., having been given a wide exposure) on the probability of having "wife" or "husband" appear as a Google suggestion:
 
