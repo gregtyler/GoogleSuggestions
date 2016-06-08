@@ -6,7 +6,6 @@ output:
   html_document:
     toc: true
     toc_depth: 2
-    theme: cosmo
 ---
 
 Google's autocomplete feature sometimes yields disturbing results. When looking for female scientists, you may have noticed the appearance of "husband" in the list of suggestions, as reported recently [on Twitter](https://twitter.com/pollyp1/status/733636162263351296). But does this only happen to female scientists?
