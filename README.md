@@ -30,7 +30,7 @@ https://www.ted.com/talks?sort=popular&topics[]=science&language=en
 
 #### AAAS
 https://www.amacad.org/multimedia/pdfs/classlist.pdf
-all in II.4 Evolutionary and Population Biology and Ecology
+all in Class II: Biological Sciences (II:1, II:2, II:3, II:4, II:5).
 
 ### HHMI
 https://www.hhmi.org/scientists/browse?kw=&sort_by=field_scientist_last_name&sort_order=ASC&items_per_page=100
