@@ -18,7 +18,7 @@ library(rmarkdown, quietly=TRUE)
 
 
 #===============================#
-# OBTAIN AND COMBINE DATA	      #
+# OBTAIN AND COMBINE DATA       #
 #===============================#
 
 # Combine data for a given "category"
@@ -86,12 +86,25 @@ if(manualcontrol){
 	library(stringr)
 	# Extract last word in name (mostly last name)
 	nm <- unname(vapply(t.science$name, function(l) word(l, -1), FUN.VALUE="c(1)"))
+	# Extract last word in name (mostly last name)
+	fnm <- unname(vapply(t.science$name, function(l) word(l, 1), FUN.VALUE="c(1)"))
 	# Sort by alphabetical order
-	onm <- nm[order(nm)]
+  aord <- order(nm)
+	onm <- nm[aord]
 	# Sort the entire table by alphabetical order
-	temp <- t.science[order(nm),]
+	temp <- t.science[aord,]
 	# Find duplicates in last names (all values, hence the | and fromLast) and print them
-	temp[duplicated(onm) | duplicated(onm, fromLast=TRUE),]
+	duplnm <- temp[duplicated(onm) | duplicated(onm, fromLast=TRUE),]
+	duplnm
+	
+	# Focus on lines with same first and last words
+  ofnm <- fnm[aord]
+  # Merge first and last names
+  omerge <- vapply(seq_along(onm), function(i){paste(ofnm[i], onm[i], sep=" ")}, FUN.VALUE="a")
+	# Find duplicates in last names (all values, hence the | and fromLast) and print them
+	temp[(duplicated(omerge) | duplicated(omerge, fromLast=TRUE)),]
+
+  cat('now inspect the abover table to find potential duplicates. \n')  
 	# Then inspect the table and potentially correct the files if typoes
 	# But this is not necessary anymore since it's already been done.
 }
