@@ -159,7 +159,7 @@ $(document).ready(function () {
 </div>
 <div id="further-dissecting-the-science-dataset" class="section level2">
 <h2>Further dissecting the “science” dataset</h2>
-<p>The suggestions highlighted on <a href="https://twitter.com/pollyp1/status/733636162263351296">Twitter</a> were mainly about HHMI scientists, so let’s focus on this subsect of our science dataset for the moment:</p>
+<p>The suggestions highlighted on <a href="https://twitter.com/pollyp1/status/733636162263351296">Twitter</a> were mainly about HHMI scientists, so let’s focus on this subset of our science dataset for the moment:</p>
 <pre class="r"><code>summary(aov(formula = wh ~ sex, data=t.science[t.science$HHMI==1,]))</code></pre>
 <pre><code>##              Df Sum Sq Mean Sq F value Pr(&gt;F)  
 ## sex           1  0.284 0.28367    4.88 0.0276 *
@@ -169,9 +169,9 @@ $(document).ready(function () {
 <p>There is indeed an effect of sex on the proportion of “wife” and “husband” in Google Suggestions for HHMI scientists. But if we look closer, we realize that out of the 12 HHMI female scientists for whom “husband” or “wife” appears in Google’s suggestions, 3 have given TED talks, out of the 4 female HHMI scientists who have given TED talks.</p>
 <p>It may be the proportion of TED speakers among female HHMI scientists</p>
 <pre><code>##    ted
-## sex yes no
-##   M 367  1
-##   W 109  4</code></pre>
+## sex  no yes
+##   M 367   1
+##   W 109   4</code></pre>
 <p>that is driving the result… but the numbers are too small in the HHMI subset of the science data to run conclusive analyses. We will hence go back to the entire science dataset, which includes AAAS (American Academy of Arts and Sciences) members (Section II.4) and all TED speakers of the science section.</p>
 <p>With this entire science dataset, we can explore the interactions between sex and the fact of having given a TED talk (i.e., haven been given a wide exposure) on the probability of having “wife” or “husband” appear as a Google suggestion:</p>
 <pre class="r"><code>summary(glm(formula = wh ~ sex*TED, data=t.science, family = binomial))</code></pre>
