@@ -182,6 +182,7 @@ colFT <- darken(colF)
 dissectscience <- tapply(t.science$wh, list(TED=t.science$TED, sex=t.science$sex), sum)
 dissectscience <- dissectscience / matrix(rep(c(xx[xx$cat=="science", "nM"], xx[xx$cat=="science", "nF"]), 2), byrow=TRUE, ncol=2)
 dmod <- cbind(c(dissectscience[,1], 0, 0), c(0, 0, dissectscience[,2])) # Trick to make R believe that there are four categories, then we can tune the colors as we wish
+par(las=1)
 #barplot(dmod, beside=FALSE, col=matrix(c(colM, colM, colF, colF), ncol=2), names.arg=c("Men", "Women"), xlim=c(0, 0.1), legend=c("1", "2", "3", "4"))
 barplot(dmod, beside=FALSE, col=matrix(c(colMT, colM, colFT, colF), ncol=2), border=TRUE, legend=c("Men, TED", "other men", "Women, TED", "Other women"), ylim=c(0, 0.1), names.arg=c("Men", "Women"), main="Proportion of scientists for whom \n'wife' or 'husband' appear as a suggestion in a Google search", cex.main=0.85)
 ```
