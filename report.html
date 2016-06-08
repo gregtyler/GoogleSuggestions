@@ -132,11 +132,23 @@ $(document).ready(function () {
 <div id="actors" class="section level3">
 <h3>Actors</h3>
 <p>There is basically no difference between male (0.81) and female (0.80) actors in terms of frequency of “wife” or “husband” suggestions by Google:</p>
-<pre class="r"><code>chisq.test(table(wh=t.actors$wh, sex=as.factor(t.actors$sex)))</code></pre>
+<pre class="r"><code>tbl &lt;- table(wh=t.actors$wh, sex=as.factor(t.actors$sex))
+tbl</code></pre>
+<pre><code>##    sex
+## wh   0  1
+##   0 13  6
+##   1 57 24</code></pre>
+<pre class="r"><code>chisq.test(tbl)</code></pre>
 <pre><code>## 
 ##  Pearson's Chi-squared test with Yates' continuity correction
 ## 
-## data:  table(wh = t.actors$wh, sex = as.factor(t.actors$sex))
+## data:  tbl
+## X-squared = 2.714e-30, df = 1, p-value = 1</code></pre>
+<pre class="r"><code>chisq.test(t(tbl))</code></pre>
+<pre><code>## 
+##  Pearson's Chi-squared test with Yates' continuity correction
+## 
+## data:  t(tbl)
 ## X-squared = 2.714e-30, df = 1, p-value = 1</code></pre>
 <pre class="r"><code>summary(glm(formula = wh ~ sex, data=t.actors, family = binomial))</code></pre>
 <pre><code>## 

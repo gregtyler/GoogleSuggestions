@@ -130,7 +130,10 @@ barplot(t(as.matrix(xx[, c("pMwh", "pFwh")])), #
 ### Actors
 There is basically no difference between male (`r sprintf("%.2f",  xx$pMwh[xx$cat=="actors"])`) and female (`r sprintf("%.2f", xx$pFwh[xx$cat=="actors"])`) actors in terms of frequency of "wife" or "husband" suggestions by Google:
 ```{r}
-chisq.test(table(wh=t.actors$wh, sex=as.factor(t.actors$sex)))
+tbl <- table(wh=t.actors$wh, sex=as.factor(t.actors$sex))
+tbl
+chisq.test(tbl)
+chisq.test(t(tbl))
 summary(glm(formula = wh ~ sex, data=t.actors, family = binomial))
 ```
 
