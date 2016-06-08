@@ -6,7 +6,7 @@ output: html_document
 ---
 Google's autocomplete feature sometimes yields disturbing results. When looking for female scientists, you may have noticed the appearance of "husband" in the list of suggestions, as reported recently [on Twitter](https://twitter.com/pollyp1/status/733636162263351296). But does this only happen to female scientists, or instead to any public figure?
 
-To answer this question, I gathered names of high profile people with different professions (scientists, tennis players, Hollywood actors), wrote a script to fetch the list of Google suggestions, and compared the proportion of people for whom "husband" and/or "wife" are suggested as a function of their profession (see the [Methods](#Methods) section for more details). 
+To answer this question, I gathered names of high profile people with different professions (scientists, tennis players, Hollywood actors), wrote a script to fetch the list of Google suggestions, and compared the proportion of people for whom "husband" and/or "wife" are suggested as a function of their profession; I completed the analysis by also looking for the word "married" (see the [Methods](#Methods) section for more details). 
 
  ```{r echo=FALSE, include=FALSE}
 # Clean the memory
@@ -29,10 +29,11 @@ getdata <- function(catname){
 
 	wife <- scan(paste(catname, "_wife.txt", sep=""))
 	husband <- scan(paste(catname, "_husband.txt", sep=""))
+	married <- scan(paste(catname, "_married.txt", sep=""))
 	n <- length(wife) - sum(dupl)
 	
 	# Combine data, removing duplicates
-	t1 <- cbind(tmp[!dupl,], wife=1-wife[!dupl], husband=1-husband[!dupl])
+	t1 <- cbind(tmp[!dupl,], wife=1-wife[!dupl], husband=1-husband[!dupl], married=1-married[!dupl])
 	# "1-" because "yes" is coded 0 in the wife and husband data.
 	whcombined <- ((t1$wife==1)|(t1$husband==1))
 	#whv <- vapply(whcombined, function(x) if(x) "yes" else "no", FUN.VALUE="a")
@@ -65,12 +66,12 @@ t.hhmi <- getdata("hhmi")
 
  # Now we need to add the removed info again!
   t.science <- data.frame(cbind(tmp[, c("name", "sex")], "science", #
-                                tmp[, c("wife", "husband", "wh")], #
+                                tmp[, c("wife", "husband", "wh", "married")], #
                                 unname(vapply(tmp[,3], function(x){if(x=="AAAS") "yes" else "no"}, FUN.VALUE="a")), #
                                 unname(vapply(tmp[,3], function(x){if(x=="HHMI") "yes" else "no"}, FUN.VALUE="a")), #
                                 unname(vapply(tmp[,3], function(x){if(x=="TED") "yes" else "no"}, FUN.VALUE="a")))#
                           )
-  names(t.science) <- c("name", "sex", "cat", "wife", "husband", "wh", "AAAS", "HHMI", "TED")
+  names(t.science) <- c("name", "sex", "cat", "wife", "husband", "wh", "married", "AAAS", "HHMI", "TED")
   # Add removed AAAS data
   for (dTA in namesTA){
 	t.science[t.science$name==dTA, "AAAS"] <- "yes"
@@ -120,7 +121,11 @@ countsuggestions <- function(cat){
 	nM <- sum(tab$sex=="M")
 	nFwh <- sum(tab$sex=="F" & tab$wh==1)
 	nMwh <- sum(!tab$sex=="F" & tab$wh==1)
-	out <- c(nF=nF, nM=nM, nFwh=nFwh, nMwh=nMwh, pFwh=nFwh/nF, pMwh=nMwh/nM)
+	nFm <- sum(tab$sex=="F" & tab$married==1)
+	nMm <- sum(!tab$sex=="F" & tab$married==1)
+	out <- c(nF=nF, nM=nM, #
+	         nFwh=nFwh, nMwh=nMwh, pFwh=nFwh/nF, pMwh=nMwh/nM, #
+	         nFm=nFm, nMm=nMm, pFm=nFm/nF, pMm=nMm/nM)
 }
 
 cats <- list("actors", "tennis", "science")
@@ -139,12 +144,16 @@ names(xx) <- c("cat", dimnames(cts)[[2]])
 colM <- rgb(0, 150, 150, 100, maxColorValue = 255)
 colF <- rgb(249, 80, 0, maxColorValue = 255)
 
-cols <- c("sex", "wh", "cat")
-#t.all <- rbind(t.tennis[, cols], t.actors[, cols], t.science[, cols])
-#counts <- table(t.all$wh, t.all$cat)
 par(las=1)
 barplot(t(as.matrix(xx[, c("pMwh", "pFwh")])), #
         beside=TRUE, col=c(colM, colF), names.arg=c("actors", "tennis players", "scientists"), ylim=c(0,1), main="Proportion of individuals for whom \n'wife' and/or 'husband' appear as suggestion in a Google search", cex.main=0.85, legend = c("Men", "Women"))
+```
+
+```{r, echo=FALSE}
+# PLOTS
+par(las=1)
+barplot(t(as.matrix(xx[, c("pMm", "pFm")])), #
+        beside=TRUE, col=c(colM, colF), names.arg=c("actors", "tennis players", "scientists"), ylim=c(0,1), main="Proportion of individuals for whom \n'married' appears as suggestion in a Google search", cex.main=0.85, legend = c("Men", "Women"))
 ```
 
 ### Actors
@@ -153,16 +162,31 @@ There is basically no difference between male (`r round(xx$pMwh[xx$cat=="actors"
 summary(glm(formula = wh ~ sex, data=t.actors, family = binomial))
 ```
 
+The difference between male (`r round(xx$nMm[xx$cat=="actors"], 2)`/`r round(xx$nM[xx$cat=="actors"], 2)`) and female (`r round(xx$nFm[xx$cat=="actors"], 2)`/`r round(xx$nF[xx$cat=="actors"], 2)`) actors in terms of the frequency of the "married" suggestion by Google is not significant either. 
+```{r}
+summary(glm(formula = wh ~ married, data=t.actors, family = binomial))
+```
+
 ### Tennis players
 There is a strong difference between male and female tennis players, but maybe not the one you'd expect: "husband" or "wife" appear in Google's suggestions for `r xx$nFwh[xx$cat=="tennis"]` women out of the `r sum(t.tennis$sex=="F")` in the dataset, while they appear for `r xx$nMwh[xx$cat=="tennis"]` men (out of `r sum(t.tennis$sex=="M")`). One reason may be that, for an equivalent ranking, the popularity of female tennis players is lower than the popularity of male tennis players. 
 ```{r}
 summary(glm(formula = wh ~ sex, data=t.tennis, family = binomial))
 ```
 
+What about the "married" word in suggestions? It occured for `r round(xx$nMm[xx$cat=="tennis"], 2)` male players and `r round(xx$nFm[xx$cat=="tennis"], 2)` female players; the difference is not significant either.
+```{r}
+summary(glm(formula = married ~ sex, data=t.tennis, family = binomial))
+```
+
 ### Scientists
 If we now turn to the scientists dataset, we first observe that the frequency at which the "wife" and "husband" suggestions appear is much lower (`r round(mean(t.science$wh), 2)` for men and women combined) than for the actors dataset for instance. What about the difference between men and women in this dataset?
 ```{r}
 summary(glm(formula = wh ~ sex, data=t.science, family = binomial))
+```
+
+And if we consider the "married" suggestion:
+```{r}
+summary(glm(formula = married ~ sex, data=t.science, family = binomial))
 ```
 
 ## Further dissecting the "science" dataset
@@ -295,7 +319,7 @@ t.science[t.science$name=="Edward O. Wilson", ]
 for a total of `r length(t.science$sex)` individual scientists (`r sum(t.science$sex=="F")` women and `r sum(t.science$sex=="M")` men). 
 
 ## Google Suggestions
-I wrote a [bash script](script.sh) to do this step automatically. Google suggestions for each name in each list were downloaded via the <http://suggestqueries.google.com> webpage. For each set of suggestions, the words "wife" and "husband" were searched for.
+I wrote a [bash script](script.sh) to do this step automatically. Google suggestions for each name in each list were downloaded via the <http://suggestqueries.google.com> webpage. For each set of suggestions, the words "wife", "husband", and also "married" were searched for.
 
 Please note that although I made sure to specify `hl=en` in the query (i.e., setting the language to English), Google Suggestions may differ depending on geographic location. You can do this step again simply by typing 
 ```{sh eval=FALSE}
