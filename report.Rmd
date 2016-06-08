@@ -130,24 +130,18 @@ barplot(t(as.matrix(xx[, c("pMwh", "pFwh")])), #
 ### Actors
 There is basically no difference between male (`r sprintf("%.2f",  xx$pMwh[xx$cat=="actors"])`) and female (`r sprintf("%.2f", xx$pFwh[xx$cat=="actors"])`) actors in terms of frequency of "wife" or "husband" suggestions by Google:
 ```{r}
-tbl <- table(wh=t.actors$wh, sex=as.factor(t.actors$sex))
-tbl
-chisq.test(tbl)
-chisq.test(t(tbl))
 summary(glm(formula = wh ~ sex, data=t.actors, family = binomial))
 ```
 
 ### Tennis players
 There is a strong difference between male and female tennis players, but maybe not the one you'd expect: "husband" or "wife" appear in Google's suggestions for `r xx$nFwh[xx$cat=="tennis"]` women out of the `r sum(t.tennis$sex)` in the dataset, while they appear for `r xx$nMwh[xx$cat=="tennis"]` men (out of `r sum(1-t.tennis$sex)`). One reason may be that, for an equivalent ranking, the popularity of female tennis players is lower than the popularity of male tennis players. 
 ```{r}
-chisq.test(table(wh=t.tennis$wh, sex=as.factor(t.tennis$sex)))
 summary(glm(formula = wh ~ sex, data=t.tennis, family = binomial))
 ```
 
 ### Scientists
 If we now turn to the scientists dataset, we first observe that the frequency at which the "wife" and "husband" suggestions appear is much lower (`r mean(t.science$wh)` for men and women combined) than for the actors dataset for instance. What about the difference between men and women in this dataset?
 ```{r}
-chisq.test(table(wh=t.science$wh, sex=as.factor(t.science$sex)))
 summary(glm(formula = wh ~ sex, data=t.science, family = binomial))
 ```
 We do not detect an significant difference in this dataset. 
@@ -156,7 +150,6 @@ We do not detect an significant difference in this dataset.
 
 The suggestions highlighted on [Twitter](https://twitter.com/pollyp1/status/733636162263351296) were mainly about HHMI scientists, so let's focus on this subset of our science dataset for the moment: 
 ```{r}
-chisq.test(table(wh=t.science[t.science$HHMI==1, "wh"], sex=as.factor(t.science[t.science$HHMI==1, "sex"])))
 summary(glm(formula = wh ~ sex, data=t.science[t.science$HHMI==1,], family = binomial))
 ```
 

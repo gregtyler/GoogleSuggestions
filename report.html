@@ -132,24 +132,6 @@ $(document).ready(function () {
 <div id="actors" class="section level3">
 <h3>Actors</h3>
 <p>There is basically no difference between male (0.81) and female (0.80) actors in terms of frequency of “wife” or “husband” suggestions by Google:</p>
-<pre class="r"><code>tbl &lt;- table(wh=t.actors$wh, sex=as.factor(t.actors$sex))
-tbl</code></pre>
-<pre><code>##    sex
-## wh   0  1
-##   0 13  6
-##   1 57 24</code></pre>
-<pre class="r"><code>chisq.test(tbl)</code></pre>
-<pre><code>## 
-##  Pearson's Chi-squared test with Yates' continuity correction
-## 
-## data:  tbl
-## X-squared = 2.714e-30, df = 1, p-value = 1</code></pre>
-<pre class="r"><code>chisq.test(t(tbl))</code></pre>
-<pre><code>## 
-##  Pearson's Chi-squared test with Yates' continuity correction
-## 
-## data:  t(tbl)
-## X-squared = 2.714e-30, df = 1, p-value = 1</code></pre>
 <pre class="r"><code>summary(glm(formula = wh ~ sex, data=t.actors, family = binomial))</code></pre>
 <pre><code>## 
 ## Call:
@@ -177,12 +159,6 @@ tbl</code></pre>
 <div id="tennis-players" class="section level3">
 <h3>Tennis players</h3>
 <p>There is a strong difference between male and female tennis players, but maybe not the one you’d expect: “husband” or “wife” appear in Google’s suggestions for 4 women out of the 50 in the dataset, while they appear for 23 men (out of 50). One reason may be that, for an equivalent ranking, the popularity of female tennis players is lower than the popularity of male tennis players.</p>
-<pre class="r"><code>chisq.test(table(wh=t.tennis$wh, sex=as.factor(t.tennis$sex)))</code></pre>
-<pre><code>## 
-##  Pearson's Chi-squared test with Yates' continuity correction
-## 
-## data:  table(wh = t.tennis$wh, sex = as.factor(t.tennis$sex))
-## X-squared = 16.438, df = 1, p-value = 5.026e-05</code></pre>
 <pre class="r"><code>summary(glm(formula = wh ~ sex, data=t.tennis, family = binomial))</code></pre>
 <pre><code>## 
 ## Call:
@@ -210,12 +186,6 @@ tbl</code></pre>
 <div id="scientists" class="section level3">
 <h3>Scientists</h3>
 <p>If we now turn to the scientists dataset, we first observe that the frequency at which the “wife” and “husband” suggestions appear is much lower (0.0843373 for men and women combined) than for the actors dataset for instance. What about the difference between men and women in this dataset?</p>
-<pre class="r"><code>chisq.test(table(wh=t.science$wh, sex=as.factor(t.science$sex)))</code></pre>
-<pre><code>## 
-##  Pearson's Chi-squared test with Yates' continuity correction
-## 
-## data:  table(wh = t.science$wh, sex = as.factor(t.science$sex))
-## X-squared = 0.72865, df = 1, p-value = 0.3933</code></pre>
 <pre class="r"><code>summary(glm(formula = wh ~ sex, data=t.science, family = binomial))</code></pre>
 <pre><code>## 
 ## Call:
@@ -245,12 +215,6 @@ tbl</code></pre>
 <div id="further-dissecting-the-science-dataset" class="section level2">
 <h2>Further dissecting the “science” dataset</h2>
 <p>The suggestions highlighted on <a href="https://twitter.com/pollyp1/status/733636162263351296">Twitter</a> were mainly about HHMI scientists, so let’s focus on this subset of our science dataset for the moment:</p>
-<pre class="r"><code>chisq.test(table(wh=t.science[t.science$HHMI==1, &quot;wh&quot;], sex=as.factor(t.science[t.science$HHMI==1, &quot;sex&quot;])))</code></pre>
-<pre><code>## 
-##  Pearson's Chi-squared test with Yates' continuity correction
-## 
-## data:  table(wh = t.science[t.science$HHMI == 1, &quot;wh&quot;], sex = as.factor(t.science[t.science$HHMI ==     1, &quot;sex&quot;]))
-## X-squared = 3.9206, df = 1, p-value = 0.0477</code></pre>
 <pre class="r"><code>summary(glm(formula = wh ~ sex, data=t.science[t.science$HHMI==1,], family = binomial))</code></pre>
 <pre><code>## 
 ## Call:
