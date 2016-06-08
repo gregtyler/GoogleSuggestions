@@ -171,6 +171,10 @@ summary(glm(formula = wh ~ sex + TED, data=t.science[t.science$HHMI==1, ], famil
 summary(glm(formula = wh ~ sex * TED, data=t.science[t.science$HHMI==1, ], family = binomial))
 ```
 
+```{r}
+summary(glm(formula = wh ~ TED, data=t.science[t.science$HHMI==1, ], family = binomial))
+```
+
 We will hence go back to the entire science dataset, which includes AAAS (American Academy of Arts and Sciences) members (Section II.4) and all TED speakers of the science section. 
 
 With this entire science dataset, we can explore the interactions between sex and the fact of having given a TED talk (i.e., having been given a wide exposure) on the probability of having "wife" or "husband" appear as a Google suggestion:
