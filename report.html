@@ -270,36 +270,31 @@ $(document).ready(function () {
 ##   M 367   1
 ##   W 109   4</code></pre>
 <p>but the numbers are too small in the HHMI subset of the science data to run conclusive analyses.</p>
-<p>Just AAAS:</p>
-<pre><code>##    ted
-## sex  no yes
-##   M 512   3
-##   W 147   4</code></pre>
 <p>We will hence go back to the entire science dataset, which includes AAAS (American Academy of Arts and Sciences) members (Section II.4) and all TED speakers of the science section.</p>
 <p>With this entire science dataset, we can explore the interactions between sex and the fact of having given a TED talk (i.e., having been given a wide exposure) on the probability of having “wife” or “husband” appear as a Google suggestion:</p>
-<pre class="r"><code>summary(glm(formula = wh ~ sex*TED, data=t.science, family = binomial))</code></pre>
+<pre class="r"><code>summary(glm(formula = wh ~ sex+TED, data=t.science[t.science$HHMI==1 | t.science$AAAS==1, ], family = binomial))</code></pre>
 <pre><code>## 
 ## Call:
-## glm(formula = wh ~ sex * TED, family = binomial, data = t.science)
+## glm(formula = wh ~ sex + TED, family = binomial, data = t.science[t.science$HHMI == 
+##     1 | t.science$AAAS == 1, ])
 ## 
 ## Deviance Residuals: 
 ##     Min       1Q   Median       3Q      Max  
-## -0.5705  -0.5361  -0.2823  -0.2823   2.5466  
+## -1.1851  -0.2751  -0.2751  -0.2751   2.5663  
 ## 
 ## Coefficients:
 ##             Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)  -3.2027     0.2281 -14.041  &lt; 2e-16 ***
-## sex           0.5854     0.3992   1.466    0.143    
-## TED           1.4695     0.2807   5.236 1.64e-07 ***
-## sex:TED      -0.7194     0.5040  -1.427    0.153    
+## (Intercept)  -3.2551     0.2313 -14.074  &lt; 2e-16 ***
+## sex           0.7385     0.3798   1.945  0.05182 .  
+## TED           2.5346     0.8038   3.153  0.00161 ** 
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
-##     Null deviance: 624.17  on 1078  degrees of freedom
-## Residual deviance: 589.84  on 1075  degrees of freedom
-## AIC: 597.84
+##     Null deviance: 262.65  on 665  degrees of freedom
+## Residual deviance: 250.01  on 663  degrees of freedom
+## AIC: 256.01
 ## 
 ## Number of Fisher Scoring iterations: 6</code></pre>
 <p>This analysis suggests that the TED effect is strongest.</p>
