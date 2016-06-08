@@ -296,7 +296,8 @@ dmod <- cbind(c(dissectscience[,1], 0, 0), c(0, 0, dissectscience[,2])) # Trick 
 par(las=1)
 barplot(dmod, beside=FALSE, col=matrix(c(colMT, colM, colFT, colF), ncol=2), border=TRUE, legend=c("Men, TED", "other men", "Women, TED", "Other women"), ylim=c(0, 0.1), names.arg=c("Men", "Women"), main="Proportion of AAAS and HHMI scientists for whom \n'wife' and/or 'husband' appear as a suggestion in a Google search", cex.main=0.85)
 ```
-```{r echo=FALSE, include=FALSE}
+
+```{r echo=FALSE, include=FALSE, eval=FALSE}
 png("fig.png", width=450, height=400)
 par(mar=c(4, 7, 4, 6))
 par(las=1)
