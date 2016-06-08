@@ -30,6 +30,13 @@ while read line; do
   echo ${line} | grep -q husband ; echo $? 
 done < $1_googlesuggestions.txt > $1_husband.txt
 
+# Search for "married"
+# 0 = yes
+rm $1_married.txt
+while read line; do
+  echo ${line} | grep -q married ; echo $? 
+done < $1_googlesuggestions.txt > $1_married.txt
+
 # Clean
 rm nameswithplus.txt
 rm tmp.txt

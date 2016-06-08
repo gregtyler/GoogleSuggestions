@@ -160,11 +160,10 @@ summary(glm(formula = wh ~ sex, data=t.tennis, family = binomial))
 ```
 
 ### Scientists
-If we now turn to the scientists dataset, we first observe that the frequency at which the "wife" and "husband" suggestions appear is much lower (`r mean(t.science$wh)` for men and women combined) than for the actors dataset for instance. What about the difference between men and women in this dataset?
+If we now turn to the scientists dataset, we first observe that the frequency at which the "wife" and "husband" suggestions appear is much lower (`r round(mean(t.science$wh), 2)` for men and women combined) than for the actors dataset for instance. What about the difference between men and women in this dataset?
 ```{r}
 summary(glm(formula = wh ~ sex, data=t.science, family = binomial))
 ```
-We do not detect an significant difference in this dataset. 
 
 ## Further dissecting the "science" dataset
 
@@ -210,6 +209,22 @@ model.sel(model.hhmi.s, model.hhmi.t, model.hhmi.st, model.hhmi.i)
 ```
 We cannot distinguish between all the models that take TED talks into account, but the model with "sex" only is the least good. 
 
+### AAAS data
+
+```{r}
+model.aaas.s <- glm(formula = wh ~ sex, data=t.science[t.science$AAAS=="yes", ], family = binomial)
+model.aaas.t <- glm(formula = wh ~ TED, data=t.science[t.science$AAAS=="yes", ], family = binomial)
+model.aaas.st <- glm(formula = wh ~ sex + TED, data=t.science[t.science$AAAS=="yes", ], family = binomial)
+model.aaas.i <- glm(formula = wh ~ sex * TED, data=t.science[t.science$AAAS=="yes", ], family = binomial)
+
+model.sel(model.aaas.s, model.aaas.t, model.aaas.st, model.aaas.i)
+```
+
+```{r}
+summary(model.aaas.i)
+```
+
+
 ### HHMI and AAAS
 We can try to add some data, and include the AAAS dataset as well. 
 
@@ -220,6 +235,10 @@ model.hhmiaaas.st <- glm(formula = wh ~ sex + TED, data=t.science[t.science$HHMI
 model.hhmiaaas.i <- glm(formula = wh ~ sex * TED, data=t.science[t.science$HHMI=="yes" | t.science$AAAS=="yes", ], family = binomial)
 
 model.sel(model.hhmiaaas.s, model.hhmiaaas.t, model.hhmiaaas.st, model.hhmiaaas.i)
+```
+
+```{r}
+summary(model.hhmiaaas.i)
 ```
 We will hence go back to the entire science dataset, which includes AAAS (American Academy of Arts and Sciences) members (Section II.4) and all TED speakers of the science section. 
 
@@ -261,11 +280,13 @@ I downloaded on 2016-06-06 a [list of the 100 most valuable movie stars](http://
 ### Scientists
 I downloaded on 2016-06-06 three datasets: 
 
-- The names of all AAAS members in the [Evolutionary and Population Biology and Ecology section](https://www.amacad.org/multimedia/pdfs/classlist.pdf) (`r sum(t.aaas$sex=="F")` women, `r sum(t.aaas$sex=="M")` men, [download the list of names](aaas.csv).);
+- The names of all AAAS members in the [Biological Sciences Class (II)](https://www.amacad.org/multimedia/pdfs/classlist.pdf) (`r sum(t.aaas$sex=="F")` women, `r sum(t.aaas$sex=="M")` men, [download the list of names](aaas.csv).);
 
 - The names of all [HHMI scientists](https://www.hhmi.org/scientists/browse?kw=&sort_by=field_scientist_last_name&sort_order=ASC&items_per_page=100) (`r sum(t.hhmi$sex=="F")` women, `r sum(t.hhmi$sex=="M")` men, [download the list of names](hhmi.csv).);
 
 - The names of all TED speakers in the [Science section](https://www.ted.com/talks?sort=popular&topics%5B%5D=science&language=en) (`r sum(t.ted$sex=="F")` women, `r sum(t.ted$sex=="M")` men, [download the list of names](ted.csv).).
+
+Sexes were assigned on the basis of first names and pictures (apoligies if I made mistakes). 
 
 Some names appear in more than one of these lists. I combined all names in a table, removed duplicates, and indicated with 0s and 1s the affiliations of each scientist, e.g.
 ```{r, echo=FALSE}
