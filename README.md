@@ -1,7 +1,9 @@
 # GoogleSuggestions
 
-## For more details: 
-go read the report 
+## To do everything again:
+type `./make.sh` in a terminal. 
+
+*For more details on what is done,*  go read the report 
 http://htmlpreview.github.io/?https://github.com/flodebarre/GoogleSuggestions/blob/master/report.html
 
 ## Contents:
@@ -9,8 +11,9 @@ http://htmlpreview.github.io/?https://github.com/flodebarre/GoogleSuggestions/bl
 type ./script.sh typedata.csv (replacing typedata by actors/ted/aaas/tennis)
 - report.Rmd to run the analysis and print the report.
 - .csv datasets: lists of names
+- make.sh to rerun the analysis. 
 
-## Sources:
+## Sources of the names:
 
 ### Tennis
 - Women: http://www.wtatennis.com/singles-rankings
@@ -19,19 +22,22 @@ type ./script.sh typedata.csv (replacing typedata by actors/ted/aaas/tennis)
 ### Actors
 http://www.vulture.com/2012/07/most-valuable-movie-stars.html
 
-### TED
+### Science
+#### TED
 Topic: Science, by: most viewed; first 3 pages
 https://www.ted.com/talks?sort=popular&topics[]=science&language=en
 (There are duplicates, they will be taken care of later)
 
-### AAAS
+#### AAAS
 https://www.amacad.org/multimedia/pdfs/classlist.pdf
 all in II.4 Evolutionary and Population Biology and Ecology
 
 ### HHMI
 https://www.hhmi.org/scientists/browse?kw=&sort_by=field_scientist_last_name&sort_order=ASC&items_per_page=100
 
-## CREDITS
+## Acknowledgements
 - Francois Bienvenu wrote a first version of the script fetching Google Suggestions in OCaml (available in the `oldstuff/` folder. He gave me the tip about the http://suggestqueries.google.com webpage.
 - Nicolas Rode gave a few helpful tips for the analysis. 
-All remaining errors are my fault. 
+
+All remaining errors are my fault.
+ 

@@ -225,8 +225,20 @@ in a terminal, where `fileprefix` is either `tennis`, `actors`, `aaas`, `hhmi`, 
 ## Analysis
 You just need to look at the [source code](report.Rmd) of this file! It is written in Rmarkdown, so the analysis code is contained in it. 
 
+## Reproducibility
+As mentioned above, the results will depend on where you run the analysis from, since Google suggestions depend on location. 
+To redo everything on the already collected lists of names, simply type
+```{sh eval=FALSE}
+./make.sh
+```
+in a terminal (in the working directory of the project.)
 
 
+  
+    
+    
+    
+    
 
 
     
