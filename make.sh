@@ -9,11 +9,16 @@
 # Fetch Google suggestions for all datasets
 #  Note: the results may depend on your location
 #        I ran the script from France.
-./script actors
-./script tennis
-./script aaas
-./script hhmi
-./script ted
+
+echo " ----  Fetching Google suggestions ---- "
+
+./script.sh actors
+./script.sh tennis
+./script.sh aaas
+./script.sh hhmi
+./script.sh ted
+
+echo " ----  Running analyses and compiling report ---- "
 
 # Run the analysis and compile the report
 Rscript -e "rmarkdown::render('report.Rmd')"
