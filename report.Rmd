@@ -10,7 +10,7 @@ output:
 
 Google's autocomplete feature sometimes yields disturbing results. When looking for female scientists, you may have noticed the appearance of "husband" in the list of suggestions, as reported recently [on Twitter](https://twitter.com/pollyp1/status/733636162263351296). But does this only happen to female scientists?
 
-To answer this question, I gathered names of high profile people with different professions (scientists, tennis players, Hollywood actors), wrote a script to fetch the list of Google suggestions, and compared the proportion of people for whom "husband" and/or "wife", and "married" are suggested. 
+To answer this question, I gathered names of high profile people with different professions (scientists, tennis players, Hollywood actors), wrote a script to fetch the list of Google suggestions, and considered the proportions of people for whom "husband" and/or "wife", and "married" are suggested. 
 
 **tl;dr:** It looks like the proportions of "wife" and/or "husband" are higher for the female scientists of our dataset (HHMI scientists as well as AAAS members in Class II: Biological Sciences) than for male scientists, but that they are also higher for scientists of our dataset who have given TED talks compared to those who have not. 
 
@@ -189,7 +189,7 @@ in a terminal (in the working directory of the project.)
 
 # Results
 
-## Comparing professions
+## For different professions
 ```{r, echo=FALSE}
 # PLOTS
 colM <- rgb(0, 150, 150, 100, maxColorValue = 255)
