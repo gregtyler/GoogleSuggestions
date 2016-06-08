@@ -173,7 +173,7 @@ $(document).ready(function () {
 ##   M 367   1
 ##   W 109   4</code></pre>
 <p>that is driving the result… but the numbers are too small in the HHMI subset of the science data to run conclusive analyses. We will hence go back to the entire science dataset, which includes AAAS (American Academy of Arts and Sciences) members (Section II.4) and all TED speakers of the science section.</p>
-<p>With this entire science dataset, we can explore the interactions between sex and the fact of having given a TED talk (i.e., haven been given a wide exposure) on the probability of having “wife” or “husband” appear as a Google suggestion:</p>
+<p>With this entire science dataset, we can explore the interactions between sex and the fact of having given a TED talk (i.e., having been given a wide exposure) on the probability of having “wife” or “husband” appear as a Google suggestion:</p>
 <pre class="r"><code>summary(glm(formula = wh ~ sex*TED, data=t.science, family = binomial))</code></pre>
 <pre><code>## 
 ## Call:
