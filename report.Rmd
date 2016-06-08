@@ -2,9 +2,8 @@
 title: "Are Google Suggestions Sexist?"
 author: "FD"
 date: "7 June 2016"
-output: html_document
+output: pdf_document
 ---
-
 Google's autocomplete feature sometimes yields disturbing results. When looking for female scientists, you may have noticed the appearance of "husband" in the list of suggestions, as reported recently [on Twitter](https://twitter.com/pollyp1/status/733636162263351296). But does this only happen to female scientists, or instead to any public figure?
 
 To answer this question, I gathered names of high profile people with different professions (scientists, tennis players, Hollywood actors), wrote a script to fetch the list of Google suggestions, and compared the proportion of people for whom "husband" and/or "wife" are suggested as a function of their profession (see the [Methods](#Methods) section for more details). 
