@@ -127,7 +127,7 @@ barplot(t(as.matrix(xx[, c("pMwh", "pFwh")])), #
 ```
 
 ### Actors
-There is basically no difference between male (`r sprintf("%.2f",  xx$pMwh[xx$cat=="actors"])`) and female (`r sprintf("%.2f", xx$pFwh[xx$cat=="actors"])`) actors in terms of frequency of "wife" or "husband" suggestions by Google:
+There is basically no difference between male (`r round(xx$pMwh[xx$cat=="actors"], 2)`) and female (`r round(xx$pFwh[xx$cat=="actors"], 2)`) actors in terms of frequency of "wife" or "husband" suggestions by Google:
 ```{r}
 summary(glm(formula = wh ~ sex, data=t.actors, family = binomial))
 ```
@@ -149,7 +149,8 @@ We do not detect an significant difference in this dataset.
 
 The suggestions highlighted on [Twitter](https://twitter.com/pollyp1/status/733636162263351296) were mainly about HHMI scientists, so let's focus on this subset of our science dataset for the moment: 
 ```{r}
-summary(glm(formula = wh ~ sex, data=t.science[t.science$HHMI==1,], family = binomial))
+model.s <- glm(formula = wh ~ sex, data=t.science[t.science$HHMI==1,], family = binomial)
+summary(model.s)
 ```
 
 There is indeed an effect of sex on the proportion of "wife" and "husband" in Google Suggestions for HHMI scientists. But if we look closer, we realize that out of the `r sum(t.science[t.science$sex==1 & t.science$HHMI==1, "wh"])` HHMI female scientists for whom "husband" or "wife" appears in Google's suggestions, `r sum(t.science[t.science$sex==1 & t.science$HHMI==1 & t.science$TED==1, "wh"])` have given TED talks, out of the `r length(t.science[t.science$sex==1 & t.science$HHMI==1 & t.science$TED==1, "wh"])` female HHMI scientists who have given TED talks. Out of the `r sum(t.science[t.science$sex==0 & t.science$HHMI==1, "wh"])` male HHMI scientists for whom "husband" or "wife" appears in Google's suggestions, `r sum(t.science[t.science$sex==0 & t.science$HHMI==1 & t.science$TED==1, "wh"])` have given TED talks, out of the `r length(t.science[t.science$sex==0 & t.science$HHMI==1 & t.science$TED==1, "wh"])` male HHMI scientists who have given TED talks.
@@ -164,17 +165,27 @@ tab
 Now adding participation to a TED talk in the analysis of this HHMI dataset,
 
 ```{r}
-summary(glm(formula = wh ~ sex + TED, data=t.science[t.science$HHMI==1, ], family = binomial))
+model.st <- glm(formula = wh ~ sex + TED, data=t.science[t.science$HHMI==1, ], family = binomial)
+summary(model.st)
 ```
 
 ```{r}
-summary(glm(formula = wh ~ sex * TED, data=t.science[t.science$HHMI==1, ], family = binomial))
+model.i <- glm(formula = wh ~ sex * TED, data=t.science[t.science$HHMI==1, ], family = binomial)
+summary(model.i)
 ```
 
 ```{r}
-summary(glm(formula = wh ~ TED, data=t.science[t.science$HHMI==1, ], family = binomial))
+model.t <- glm(formula = wh ~ TED, data=t.science[t.science$HHMI==1, ], family = binomial)
+summary(model.t)
 ```
 
+
+```{r}
+#install.packages("MuMIn")
+library(MuMIn, quiet=TRUE)
+model.sel(model.s, model.t, model.st, model.i)
+
+```
 We will hence go back to the entire science dataset, which includes AAAS (American Academy of Arts and Sciences) members (Section II.4) and all TED speakers of the science section. 
 
 With this entire science dataset, we can explore the interactions between sex and the fact of having given a TED talk (i.e., having been given a wide exposure) on the probability of having "wife" or "husband" appear as a Google suggestion:
