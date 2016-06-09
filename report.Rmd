@@ -353,7 +353,9 @@ barplot(dmod2, beside=FALSE, col=matrix(c(colMT, colM, colFT, colF), ncol=2), bo
 ```
     
 
+# Comments?
 
+If you have comments or suggestions, feel free to [contact me](mailto:florence.debarre@normalesup.org)!
     
     
     
