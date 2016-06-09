@@ -10,11 +10,11 @@ output:
 
 Google's autocomplete feature sometimes yields disturbing results. When looking for female scientists, you may have noticed the appearance of "husband" in the list of suggestions, as reported recently [on Twitter](https://twitter.com/pollyp1/status/733636162263351296). But does this only happen to female scientists?
 
-To answer this question, I gathered names of high profile people with different professions (scientists, tennis players, Hollywood actors), wrote a script to fetch the list of Google suggestions, and considered the proportions of people for whom "husband" and/or "wife", and "married" are suggested. 
+To answer this question, I gathered names of high profile people with different professions (scientists, tennis players, Hollywood actors), wrote a script to fetch the list of Google suggestions, and considered the proportions of people for whom "husband" and/or "wife" are suggested; I also looked for the word "married". 
 
 **tl;dr:** It looks like the proportions of "wife" and/or "husband" are higher for the female scientists of our dataset (HHMI scientists as well as AAAS members in Class II: Biological Sciences) than for male scientists, but that they are also higher for scientists of our dataset who have given TED talks compared to those who have not. 
 
- ```{r echo=FALSE, include=FALSE}
+```{r echo=FALSE, include=FALSE}
 # Clean the memory
 rm(list=ls())
 
@@ -45,6 +45,7 @@ getdata <- function(catname){
 	#whv <- vapply(whcombined, function(x) if(x) "yes" else "no", FUN.VALUE="a")
 	t2 <- cbind(t1, wh=1*whcombined) 
 	names(t2)[1:3] <- c("name", "sex", "cat")
+	t2[t2$sex=="F","sex"] <- "W" # Changing the way women are encoded to change the alphabetical order btw F/M vs M/W
 	return(t2)
 }
 
@@ -123,12 +124,12 @@ if(manualcontrol){
 # Count the number of F/M, wife+husband
 countsuggestions <- function(cat){
 	tab <- get(paste("t.", cat, sep=""))
-	nF <- sum(tab$sex=="F")
+	nF <- sum(tab$sex=="W")
 	nM <- sum(tab$sex=="M")
-	nFwh <- sum(tab$sex=="F" & tab$wh==1)
-	nMwh <- sum(!tab$sex=="F" & tab$wh==1)
-	nFm <- sum(tab$sex=="F" & tab$married==1)
-	nMm <- sum(!tab$sex=="F" & tab$married==1)
+	nFwh <- sum(tab$sex=="W" & tab$wh==1)
+	nMwh <- sum(!tab$sex=="W" & tab$wh==1)
+	nFm <- sum(tab$sex=="W" & tab$married==1)
+	nMm <- sum(!tab$sex=="W" & tab$married==1)
 	out <- c(nF=nF, nM=nM, #
 	         nFwh=nFwh, nMwh=nMwh, pFwh=nFwh/nF, pMwh=nMwh/nM, #
 	         nFm=nFm, nMm=nMm, pFm=nFm/nF, pMm=nMm/nM)
@@ -139,8 +140,7 @@ cts <- t(sapply(cats, countsuggestions))
 x <- data.frame(cts)
 xx <- cbind(data.frame(cat=unlist(cats)), x)
 names(xx) <- c("cat", dimnames(cts)[[2]])
-
- ```
+```
 
 # Methods
 ## Name collection
@@ -148,16 +148,16 @@ names(xx) <- c("cat", dimnames(cts)[[2]])
 I downloaded on 2016-06-06 the names of the 50 best-ranked male and female tennis players (according to the [ATP](http://www.atpworldtour.com/en/rankings/singles) and [WTA](http://www.wtatennis.com/singles-rankings) rankings). [(download the list of names)](tennis.csv).
 
 ### Actors
-I downloaded on 2016-06-06 a [list of the 100 most valuable movie stars](http://www.vulture.com/2012/07/most-valuable-movie-stars.html), assigned sexes based on first names and pictures. The list contains `r sum(t.actors$sex=="F")` women names and `r sum(t.actors$sex=="M")` men names. [(download the list of names)](actors.csv).
+I downloaded on 2016-06-06 a [list of the 100 most valuable movie stars](http://www.vulture.com/2012/07/most-valuable-movie-stars.html), assigned sexes based on first names and pictures. The list contains `r sum(t.actors$sex=="W")` women names and `r sum(t.actors$sex=="M")` men names. [(download the list of names)](actors.csv).
 
 ### Scientists
 I downloaded on 2016-06-06 three datasets: 
 
-- The names of all AAAS members in the [Biological Sciences Class (II)](https://www.amacad.org/multimedia/pdfs/classlist.pdf) (`r sum(t.aaas$sex=="F")` women, `r sum(t.aaas$sex=="M")` men, [download the list of names](aaas.csv).);
+- The names of all AAAS members in the [Biological Sciences Class (II)](https://www.amacad.org/multimedia/pdfs/classlist.pdf) (`r sum(t.aaas$sex=="W")` women, `r sum(t.aaas$sex=="M")` men, [download the list of names](aaas.csv).);
 
-- The names of all [HHMI scientists](https://www.hhmi.org/scientists/browse?kw=&sort_by=field_scientist_last_name&sort_order=ASC&items_per_page=100) (`r sum(t.hhmi$sex=="F")` women, `r sum(t.hhmi$sex=="M")` men, [download the list of names](hhmi.csv).);
+- The names of all [HHMI scientists](https://www.hhmi.org/scientists/browse?kw=&sort_by=field_scientist_last_name&sort_order=ASC&items_per_page=100) (`r sum(t.hhmi$sex=="W")` women, `r sum(t.hhmi$sex=="M")` men, [download the list of names](hhmi.csv).);
 
-- The names of all TED speakers in the [Science section](https://www.ted.com/talks?sort=popular&topics%5B%5D=science&language=en) (`r sum(t.ted$sex=="F")` women, `r sum(t.ted$sex=="M")` men, [download the list of names](ted.csv).).
+- The names of all TED speakers in the [Science section](https://www.ted.com/talks?sort=popular&topics%5B%5D=science&language=en) (`r sum(t.ted$sex=="W")` women, `r sum(t.ted$sex=="M")` men, [download the list of names](ted.csv).).
 
 Sexes were assigned on the basis of first names and pictures (apologies if I made mistakes). 
 
@@ -165,7 +165,7 @@ Some names appear in more than one of these lists. I combined all names in a sin
 ```{r, echo=FALSE}
 t.science[t.science$name=="Edward O. Wilson", ]
 ```
-for a total of `r length(t.science$sex)` individual scientists (`r sum(t.science$sex=="F")` women and `r sum(t.science$sex=="M")` men). The `wh` column above combines the `wife` and `husband` information (`1` means that the words "wife" and/or "husband" appear in the suggestions). 
+for a total of `r length(t.science$sex)` individual scientists (`r sum(t.science$sex=="W")` women and `r sum(t.science$sex=="M")` men). The `wh` column above combines the `wife` and `husband` information (`1` means that the words "wife" and/or "husband" appear in the suggestions). 
 
 ## Google Suggestions
 I wrote a [bash script](script.sh) to do this step automatically. Google suggestions for each name in each list were downloaded via the <http://suggestqueries.google.com> webpage. For each set of suggestions, the words "wife", "husband", and also "married" were searched for.
@@ -200,33 +200,17 @@ barplot(t(as.matrix(xx[, c("pMwh", "pFwh")])), #
         beside=TRUE, col=c(colM, colF), names.arg=c("actors", "tennis players", "scientists"), ylim=c(0,1), main="Proportion of individuals for whom \n'wife' and/or 'husband' appear as suggestion in a Google search", cex.main=0.85, legend = c("Men", "Women"))
 ```
 
-```{r, echo=FALSE}
-# PLOTS
-par(las=1)
-barplot(t(as.matrix(xx[, c("pMm", "pFm")])), #
-        beside=TRUE, col=c(colM, colF), names.arg=c("actors", "tennis players", "scientists"), ylim=c(0,1), main="Proportion of individuals for whom \n'married' appears as suggestion in a Google search", cex.main=0.85, legend = c("Men", "Women"))
-```
-
 ### Actors
 There is basically no difference between male (`r round(xx$pMwh[xx$cat=="actors"], 2)`) and female (`r round(xx$pFwh[xx$cat=="actors"], 2)`) actors in terms of frequency of "wife" or "husband" suggestions by Google:
 ```{r}
 summary(glm(formula = wh ~ sex, data=t.actors, family = binomial))
 ```
 
-The difference between male (`r round(xx$nMm[xx$cat=="actors"], 2)`/`r round(xx$nM[xx$cat=="actors"], 2)`) and female (`r round(xx$nFm[xx$cat=="actors"], 2)`/`r round(xx$nF[xx$cat=="actors"], 2)`) actors in terms of the frequency of the "married" suggestion by Google is not significant either. 
-```{r}
-summary(glm(formula = wh ~ married, data=t.actors, family = binomial))
-```
 
 ### Tennis players
-There is a strong difference between male and female tennis players, but maybe not the one you'd expect: "husband" or "wife" appear in Google's suggestions for `r xx$nFwh[xx$cat=="tennis"]` women out of the `r sum(t.tennis$sex=="F")` in the dataset, while they appear for `r xx$nMwh[xx$cat=="tennis"]` men (out of `r sum(t.tennis$sex=="M")`). One reason may be that, for an equivalent ranking, the popularity of female tennis players is lower than the popularity of male tennis players. 
+There is a strong difference between male and female tennis players, but maybe not the one you'd expect: "husband" or "wife" appear in Google's suggestions for `r xx$nFwh[xx$cat=="tennis"]` women out of the `r sum(t.tennis$sex=="W")` in the dataset, while they appear for `r xx$nMwh[xx$cat=="tennis"]` men (out of `r sum(t.tennis$sex=="M")`). One reason may be that, for an equivalent ranking, the popularity of female tennis players is lower than the popularity of male tennis players. 
 ```{r}
 summary(glm(formula = wh ~ sex, data=t.tennis, family = binomial))
-```
-
-What about the "married" word in suggestions? It occured for `r round(xx$nMm[xx$cat=="tennis"], 2)` male players and `r round(xx$nFm[xx$cat=="tennis"], 2)` female players; the difference is not significant either.
-```{r}
-summary(glm(formula = married ~ sex, data=t.tennis, family = binomial))
 ```
 
 ### Scientists
@@ -235,16 +219,11 @@ If we now turn to the scientists dataset, we first observe that the frequency at
 summary(glm(formula = wh ~ sex, data=t.science, family = binomial))
 ```
 
-And if we consider the "married" suggestion:
-```{r}
-summary(glm(formula = married ~ sex, data=t.science, family = binomial))
-```
-
-In both cases, there is a significant effect of sex, the proportions of "wife" and/or "husband", and of "maried" being higher among Google suggestions for female scientists. 
+There is a significant effect of sex; the proportions of "wife" and/or "husband" are higher among Google suggestions for female scientists. 
 
 ## Further dissecting the "science" dataset
 
-Some TED speakers are not scientists, but science journalists. So here, we will focus on the AAAS+HHMI datasets, keeping the information of whether the scientists have given TED talks. TED talks are considered here as a proxy of fame / public exposure (some TED talks have millions of views!). It is likely that the more well-known a scientist is, the more likely he/she is to be Googled... and maybe the more likely it is to see "wife" and/or "husband", and "married" appear in the suggestions.  
+Some TED speakers are not scientists, but science journalists. So here, we will focus on the AAAS+HHMI datasets, keeping the information of whether the scientists have given TED talks. TED talks are considered here as a proxy of fame / public exposure (some TED talks have millions of views!). It is likely that the more well-known a scientist is, the more likely he/she is to be Googled... and maybe the more likely it is to see "wife" and/or "husband" appear in the suggestions.  
 
 Here are the sizes of each categories of the AAAS+HHMI data:
 ```{r, echo=FALSE}
@@ -254,6 +233,7 @@ tapply(sciencesubset$wh, list(TED=sciencesubset$TED, sex=sciencesubset$sex), len
 
 ### "wife" and/or "husband" for HHMI + AAAS scientists
 
+Let's compare different models including sex and/or TED as factors:
 ```{r, echo=FALSE, include=FALSE}
 #install.packages("MuMIn")
 library(MuMIn, quiet=TRUE)
@@ -288,8 +268,7 @@ darken <- function(color, factor=1.4){
 colMT <- darken(colM)
 colFT <- darken(colF)
 
-dissectscience <- dissectscience / matrix(rep(c(sum(sciencesubset$sex=="F"), sum(sciencesubset$sex=="M")), 2), byrow=TRUE, ncol=2)
-dissectscience <- dissectscience[, c("M", "F")] # Invert the two columns
+dissectscience <- dissectscience / matrix(rep(c(sum(sciencesubset$sex==dimnames(dissectscience)$sex[1]), sum(sciencesubset$sex==dimnames(dissectscience)$sex[2])), 2), byrow=TRUE, ncol=2)
 dissectscience <- dissectscience[c("yes", "no"), ] # Invert the two lines
 
 dmod <- cbind(c(dissectscience[,1], 0, 0), c(0, 0, dissectscience[,2])) # Trick to make R believe that there are four categories, then we can tune the colors as we wish
@@ -309,7 +288,38 @@ text(0.7, 0.003, "have NOT given \nTED talks", pos=3, cex=thecex)
 dev.off()
 #system("open fig.png")
 ```
-### "married" for HHMI + AAAS scientists
+
+# What about "married"?
+
+## For different professions
+
+```{r, echo=FALSE}
+# PLOTS
+par(las=1)
+barplot(t(as.matrix(xx[, c("pMm", "pFm")])), #
+        beside=TRUE, col=c(colM, colF), names.arg=c("actors", "tennis players", "scientists"), ylim=c(0,1), main="Proportion of individuals for whom \n'married' appears as suggestion in a Google search", cex.main=0.85, legend = c("Men", "Women"))
+```
+
+### Actors
+The difference between male (`r round(xx$nMm[xx$cat=="actors"], 2)`/`r round(xx$nM[xx$cat=="actors"], 2)`) and female (`r round(xx$nFm[xx$cat=="actors"], 2)`/`r round(xx$nF[xx$cat=="actors"], 2)`) actors in terms of the frequency of the "married" suggestion by Google is not significant. 
+```{r}
+summary(glm(formula = married ~ sex, data=t.actors, family = binomial))
+```
+
+### Tennis players
+The word "married" occured for `r round(xx$nMm[xx$cat=="tennis"], 2)` male players and `r round(xx$nFm[xx$cat=="tennis"], 2)` female players; the difference is not significant either.
+```{r}
+summary(glm(formula = married ~ sex, data=t.tennis, family = binomial))
+```
+
+### Scientists
+For the scientists:
+```{r}
+summary(glm(formula = married ~ sex, data=t.science, family = binomial))
+```
+There is also an effect of sex on the occurence of the word "married" in Google suggestions. 
+    
+## "married" for HHMI + AAAS scientists
 
 ```{r}
 model.hhmiaaas.m.s <- glm(formula = married ~ sex, data=sciencesubset, family = binomial)
@@ -320,7 +330,7 @@ model.hhmiaaas.m.i <- glm(formula = married ~ sex * TED, data=sciencesubset, fam
 model.sel(model.hhmiaaas.m.s, model.hhmiaaas.m.t, model.hhmiaaas.m.st, model.hhmiaaas.m.i)
 ```
 
-The models with and without sex*TED interaction are not distinguishable, so we will choose the simpler:
+The models with and without sex*TED interaction are not distinguishable based on AICc, so we will choose the simpler:
 ```{r}
 summary(model.hhmiaaas.m.st)
 ```
@@ -333,20 +343,14 @@ dissectscience2
 
 In terms of proportions for each sex, this corresponds to
 ```{r echo=FALSE}
-dissectscience2 <- dissectscience2 / matrix(rep(c(sum(sciencesubset$sex=="F"), sum(sciencesubset$sex=="M")), 2), byrow=TRUE, ncol=2)
-dissectscience2 <- dissectscience2[, c("M", "F")] # Invert the two columns
+dissectscience2 <- dissectscience2 / matrix(rep(c(sum(sciencesubset$sex==dimnames(dissectscience2)$sex[1]), sum(sciencesubset$sex==dimnames(dissectscience2)$sex[2])), 2), byrow=TRUE, ncol=2)
+#dissectscience2 <- dissectscience2[, c("M", "W")] # Invert the two columns
 dissectscience2 <- dissectscience2[c("yes", "no"), ] # Invert the two lines
 
 dmod2 <- cbind(c(dissectscience2[,1], 0, 0), c(0, 0, dissectscience2[,2])) # Trick to make R believe that there are four categories, then we can tune the colors as we wish
 par(las=1)
 barplot(dmod2, beside=FALSE, col=matrix(c(colMT, colM, colFT, colF), ncol=2), border=TRUE, legend=c("Men, TED", "other men", "Women, TED", "Other women"), ylim=c(0, 0.1), names.arg=c("Men", "Women"), main="Proportion of AAAS and HHMI scientists for whom \n'married' appears as a suggestion in a Google search", cex.main=0.85)
 ```
-
-
-  
-    
-    
-    
     
 
 
