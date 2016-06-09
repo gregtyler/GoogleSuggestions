@@ -197,7 +197,7 @@ colF <- rgb(249, 80, 0, maxColorValue = 255)
 
 par(las=1)
 barplot(t(as.matrix(xx[, c("pMwh", "pFwh")])), #
-        beside=TRUE, col=c(colM, colF), names.arg=c("actors", "tennis players", "scientists"), ylim=c(0,1), main="Proportion of individuals for whom \n'wife' and/or 'husband' appear as suggestion in a Google search", cex.main=0.85, legend = c("Men", "Women"))
+        beside=TRUE, col=c(colM, colF), names.arg=c("actors", "tennis players", "scientists"), ylim=c(0,1), main="Proportions, by gender, of individuals for whom \n'wife' and/or 'husband' appear as suggestion in a Google search", cex.main=0.85, legend = c("Men", "Women"))
 ```
 
 ### Actors
@@ -273,14 +273,14 @@ dissectscience <- dissectscience[c("yes", "no"), ] # Invert the two lines
 
 dmod <- cbind(c(dissectscience[,1], 0, 0), c(0, 0, dissectscience[,2])) # Trick to make R believe that there are four categories, then we can tune the colors as we wish
 par(las=1)
-barplot(dmod, beside=FALSE, col=matrix(c(colMT, colM, colFT, colF), ncol=2), border=TRUE, legend=c("Men, TED", "other men", "Women, TED", "Other women"), ylim=c(0, 0.1), names.arg=c("Men", "Women"), main="Proportion of AAAS and HHMI scientists for whom \n'wife' and/or 'husband' appear as a suggestion in a Google search", cex.main=0.85)
+barplot(dmod, beside=FALSE, col=matrix(c(colMT, colM, colFT, colF), ncol=2), border=TRUE, legend=c("Men, TED", "other men", "Women, TED", "Other women"), ylim=c(0, 0.1), names.arg=c("Men", "Women"), main="Proportions, by gender, of AAAS and HHMI scientists for whom \n'wife' and/or 'husband' appear as a suggestion in a Google search", cex.main=0.85)
 ```
 
 ```{r echo=FALSE, include=FALSE, eval=FALSE}
 png("fig.png", width=450, height=400)
 par(mar=c(4, 7, 4, 6))
 par(las=1)
-barplot(dmod, beside=FALSE, col=matrix(c(colMT, colM, colFT, colF), ncol=2), border=TRUE, ylim=c(0, 0.1), names.arg=c("Men", "Women"), main="Proportion of all AAAS members in Class II: Biological Sciences\n and HHMI scientists for whom 'wife' and/or 'husband' \nappear as a suggestion in a Google search", cex.main=1)
+barplot(dmod, beside=FALSE, col=matrix(c(colMT, colM, colFT, colF), ncol=2), border=TRUE, ylim=c(0, 0.1), names.arg=c("Men", "Women"), main="Proportions, by gender, of all AAAS members in Class II: Biological Sciences\n and HHMI scientists for whom 'wife' and/or 'husband' \nappear as a suggestion in a Google search", cex.main=1)
 thecex <- 1.15
 text(1.9, 0.00, "have given \nTED talks", pos=3, cex=thecex)
 text(1.9, 0.03, "have NOT given \nTED talks", pos=3, cex=thecex)
@@ -297,7 +297,7 @@ dev.off()
 # PLOTS
 par(las=1)
 barplot(t(as.matrix(xx[, c("pMm", "pFm")])), #
-        beside=TRUE, col=c(colM, colF), names.arg=c("actors", "tennis players", "scientists"), ylim=c(0,1), main="Proportion of individuals for whom \n'married' appears as suggestion in a Google search", cex.main=0.85, legend = c("Men", "Women"))
+        beside=TRUE, col=c(colM, colF), names.arg=c("actors", "tennis players", "scientists"), ylim=c(0,1), main="Proportions, by gender, of individuals for whom \n'married' appears as suggestion in a Google search", cex.main=0.85, legend = c("Men", "Women"))
 ```
 
 ### Actors
@@ -349,7 +349,7 @@ dissectscience2 <- dissectscience2[c("yes", "no"), ] # Invert the two lines
 
 dmod2 <- cbind(c(dissectscience2[,1], 0, 0), c(0, 0, dissectscience2[,2])) # Trick to make R believe that there are four categories, then we can tune the colors as we wish
 par(las=1)
-barplot(dmod2, beside=FALSE, col=matrix(c(colMT, colM, colFT, colF), ncol=2), border=TRUE, legend=c("Men, TED", "other men", "Women, TED", "Other women"), ylim=c(0, 0.1), names.arg=c("Men", "Women"), main="Proportion of AAAS and HHMI scientists for whom \n'married' appears as a suggestion in a Google search", cex.main=0.85)
+barplot(dmod2, beside=FALSE, col=matrix(c(colMT, colM, colFT, colF), ncol=2), border=TRUE, legend=c("Men, TED", "other men", "Women, TED", "Other women"), ylim=c(0, 0.1), names.arg=c("Men", "Women"), main="Proportions, by gender, of AAAS and HHMI scientists for whom \n'married' appears as a suggestion in a Google search", cex.main=0.85)
 ```
     
 
