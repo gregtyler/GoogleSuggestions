@@ -245,7 +245,13 @@ model.hhmiaaas.wh.t <- glm(formula = wh ~ TED, data=sciencesubset, family = bino
 model.hhmiaaas.wh.st <- glm(formula = wh ~ sex + TED, data=sciencesubset, family = binomial)
 model.hhmiaaas.wh.i <- glm(formula = wh ~ sex * TED, data=sciencesubset, family = binomial)
 
-model.sel(model.hhmiaaas.wh.s, model.hhmiaaas.wh.t, model.hhmiaaas.wh.st, model.hhmiaaas.wh.i)
+# Adding new stuff for Nico
+sciencesubset$Int <- as.factor(paste(sciencesubset$sex, sciencesubset$TED, sep="_"))
+levels(sciencesubset$In) <- c("M", "M", levels(sciencesubset$In)[3], levels(sciencesubset$In)[4])
+
+model.hhmiaaas.wh.nico <- glm(wh ~ Int, family = binomial, data = sciencesubset)
+
+model.sel(model.hhmiaaas.wh.s, model.hhmiaaas.wh.t, model.hhmiaaas.wh.st, model.hhmiaaas.wh.i, model.hhmiaaas.wh.nico)
 ```
 
 The best model seems to be the one that takes into account sex, TED talks, and the interaction between sex and TED talks:
