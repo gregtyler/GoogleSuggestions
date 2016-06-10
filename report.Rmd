@@ -247,11 +247,19 @@ model.hhmiaaas.wh.i <- glm(formula = wh ~ sex * TED, data=sciencesubset, family 
 
 # Adding new stuff for Nico
 sciencesubset$Int <- as.factor(paste(sciencesubset$sex, sciencesubset$TED, sep="_"))
-levels(sciencesubset$In) <- c("M", "M", levels(sciencesubset$In)[3], levels(sciencesubset$In)[4])
+levels(sciencesubset$Int) <- c("M", "M", levels(sciencesubset$Int)[3], levels(sciencesubset$Int)[4])
 
 model.hhmiaaas.wh.nico <- glm(wh ~ Int, family = binomial, data = sciencesubset)
+summary(model.hhmiaaas.wh.nico)
 
-model.sel(model.hhmiaaas.wh.s, model.hhmiaaas.wh.t, model.hhmiaaas.wh.st, model.hhmiaaas.wh.i, model.hhmiaaas.wh.nico)
+# Other suggestion
+sciencesubset$four <- as.factor(paste(sciencesubset$sex, sciencesubset$TED, sep="_"))
+#levels(sciencesubset$Int) <- c("M", "M", levels(sciencesubset$Int)[3], levels(sciencesubset$Int)[4])
+
+model.hhmiaaas.wh.flo <- glm(wh ~ four, family = binomial, data = sciencesubset)
+summary(model.hhmiaaas.wh.flo)
+
+model.sel(model.hhmiaaas.wh.s, model.hhmiaaas.wh.t, model.hhmiaaas.wh.st, model.hhmiaaas.wh.i, model.hhmiaaas.wh.nico, model.hhmiaaas.wh.flo)
 ```
 
 The best model seems to be the one that takes into account sex, TED talks, and the interaction between sex and TED talks:
@@ -294,6 +302,31 @@ text(0.7, 0.003, "have NOT given \nTED talks", pos=3, cex=thecex)
 dev.off()
 #system("open fig.png")
 ```
+
+### Back to the entire dataset
+```{r}
+model.science.wh.s <- glm(formula = wh ~ sex, data=t.science, family = binomial)
+model.science.wh.t <- glm(formula = wh ~ TED, data=t.science, family = binomial)
+model.science.wh.st <- glm(formula = wh ~ sex + TED, data=t.science, family = binomial)
+model.science.wh.i <- glm(formula = wh ~ sex * TED, data=t.science, family = binomial)
+
+# Adding new stuff for Nico
+t.science$Int <- as.factor(paste(t.science$sex, t.science$TED, sep="_"))
+levels(t.science$Int) <- c("M", "M", levels(t.science$Int)[3], levels(t.science$Int)[4])
+
+model.science.wh.nico <- glm(wh ~ Int, family = binomial, data = t.science)
+summary(model.science.wh.nico)
+
+# Other suggestion
+t.science$four <- as.factor(paste(t.science$sex, t.science$TED, sep="_"))
+#levels(sciencesubset$Int) <- c("M", "M", levels(sciencesubset$Int)[3], levels(sciencesubset$Int)[4])
+
+model.science.wh.flo <- glm(wh ~ four, family = binomial, data = t.science)
+summary(model.science.wh.flo)
+
+model.sel(model.science.wh.s, model.science.wh.t, model.science.wh.st, model.science.wh.i, model.science.wh.nico, model.science.wh.flo)
+```
+
 
 # What about "married"?
 
