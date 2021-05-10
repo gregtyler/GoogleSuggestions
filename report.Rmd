@@ -150,6 +150,8 @@ I downloaded on 2016-06-06 the names of the 50 best-ranked male and female tenni
 ### Actors
 I downloaded on 2016-06-06 a [list of the 100 most valuable movie stars](http://www.vulture.com/2012/07/most-valuable-movie-stars.html), assigned sexes based on first names and pictures. The list contains `r sum(t.actors$sex=="W")` women names and `r sum(t.actors$sex=="M")` men names. [(download the list of names)](actors.csv).
 
+**gregtyler:** I added Frances McDormand as a test/demo of updating this data
+
 ### Scientists
 I downloaded on 2016-06-06 three datasets: 
 
