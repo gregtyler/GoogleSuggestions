@@ -1,5 +1,7 @@
 # GoogleSuggestions
 
+**Note for gregtyler/GoogleSuggestions:** I forked this to regenerate the data. I didn't write any of it originally (that was @flodebarre) so take no credit for the work!
+
 ## To do everything again:
 type `./make.sh` in a terminal. 
 
